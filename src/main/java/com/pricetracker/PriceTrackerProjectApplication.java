@@ -1,4 +1,4 @@
-package com.pricetracker.Price.Tracker.Project;
+package com.pricetracker;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
