@@ -1,10 +1,10 @@
 package com.pricetracker.repository;
 
-import com.pricetracker.entity.ProductPriceHistory;
+import com.pricetracker.entity.PriceHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ProductPriceHistoryRepo extends JpaRepository<ProductPriceHistory, Long> {
+public interface ProductPriceHistoryRepo extends JpaRepository<PriceHistory, Long> {
 
 }
