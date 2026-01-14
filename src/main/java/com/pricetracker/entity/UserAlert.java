@@ -20,7 +20,6 @@ public class UserAlert {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long alertId;
 
-    private String platformName;
     private Integer targetPrice;
     private Boolean isActive;
     private LocalDateTime createdAt;
@@ -31,11 +30,12 @@ public class UserAlert {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    // product_id foreign key will go here too
+
+    // Many alerts belong to one product (via ASIN)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "asin", referencedColumnName = "asin", nullable = false)
     private Product product;
 
-    // Getters & Setters
+
 }
 
