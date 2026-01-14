@@ -13,31 +13,24 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "product_history")
-public class ProductPriceHistory {
+@Table(name = "price_history")
+public class PriceHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // many history rows belong to one product
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn( nullable = false)
-    private Product product;
-
-    @Column(nullable = false, length = 50)
-    private String platformName;
-
-    private Integer oldPrice;
+    @Column(nullable = false)
+    private String asin;
 
     @Column(nullable = false)
-    private Integer newPrice;
+    private Integer Price;
 
-    private LocalDateTime recordedAt;
+    private LocalDateTime checkedAt;
 
     // automatically set when history record is inserted
     @PrePersist
     protected void onCreate() {
-        this.recordedAt = LocalDateTime.now();
+        this.checkedAt = LocalDateTime.now();
     }
 }
