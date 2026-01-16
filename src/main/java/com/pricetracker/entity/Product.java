@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Table(
         name = "product",
         indexes = {
-                @Index(name = "idx_product_asin", columnList = "asin")
+                @Index(name = "idx_product_id", columnList = "id")
         }
 )
 
@@ -24,20 +24,14 @@ public class Product {
     private Long id;
 
     @Column(nullable = false, unique = true, length = 20)
-    private String asin;
+    private String pid;
 
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false, length = 1000)
-    private String productUrl;
-
-
-    @Column(nullable = false)
-    private Integer currentPrice;
-
     @Column(nullable = false)
     private String category;
+
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

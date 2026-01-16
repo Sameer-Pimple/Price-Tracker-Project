@@ -13,28 +13,26 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "price_history")
-public class PriceHistory {
-
+@Table(name = "storeSales")
+public class StoreSales {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    @Column(nullable = false, length = 1000)
+    private String SaleName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id", nullable = false)
     private Store store;
 
-    @Column(nullable = false)
-    private Integer price;
+    private LocalDateTime StartDate;
+    private LocalDateTime EndDate;
 
-    private LocalDateTime date;
-    // automatically set when history record is inserted
+
     @PrePersist
     protected void onCreate() {
-        this.date = LocalDateTime.now();
+        this.StartDate = LocalDateTime.now();
     }
+
 }
