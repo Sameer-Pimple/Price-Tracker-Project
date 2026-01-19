@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -31,10 +32,11 @@ public class PriceHistory {
     @Column(nullable = false)
     private Integer price;
 
-    private LocalDateTime date;
-    // automatically set when history record is inserted
+    private LocalDate date;
+    // automatically set when history record is inser
+    //  ted
     @PrePersist
     protected void onCreate() {
-        this.date = LocalDateTime.now();
+        this.date = LocalDate.now();
     }
 }

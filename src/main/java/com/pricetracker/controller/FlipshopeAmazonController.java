@@ -38,7 +38,6 @@ public class FlipshopeAmazonController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
 
-
     public String getFlipshopeJson(@RequestBody Map<String, String> body) {
 
         WebDriver driver = null;
@@ -83,7 +82,7 @@ public class FlipshopeAmazonController {
             options.addArguments("--user-agent=" + selectedUA);
 
             // ===== Proxy condition =====
-            if (PROXY_LIST != null && !PROXY_LIST.isEmpty()) {
+            if (!PROXY_LIST.isEmpty()) {
                 String selectedProxy = PROXY_LIST.get(
                         random.nextInt(PROXY_LIST.size())
                 );
