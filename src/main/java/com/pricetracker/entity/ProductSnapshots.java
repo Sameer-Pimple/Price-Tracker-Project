@@ -34,9 +34,6 @@ public class ProductSnapshots {
     private Integer MRP;
 
     @Column(nullable = false)
-    private Integer Discount;
-
-    @Column(nullable = false)
     private Integer Rating;
 
     @Column(nullable = false)

@@ -32,6 +32,9 @@ public class Product {
     @Column(nullable = false)
     private String category;
 
+    @Column(nullable = false, length = 1000)
+    private String Img_url;
+
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

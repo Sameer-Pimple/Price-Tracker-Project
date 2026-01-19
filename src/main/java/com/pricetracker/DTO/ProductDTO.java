@@ -18,16 +18,16 @@ public class ProductDTO {
     private Integer stock;
     private String time;
     private String cat;
-    private String imgurl;
     private Integer mrp;
     private Integer rating;
     private String title;
 
-    private List<String> all_imgurls;
+    private String imgurl;
 
     private List<GraphDataDTO> graph_data;
 
     private String store_name;
+    private String store_domain;
     private String store_imgurl;
 
 

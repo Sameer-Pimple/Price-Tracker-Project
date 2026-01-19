@@ -7,10 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class StoreSaleDTO {
-
-    private String sale_name;
-    private String start_date;
-    private String end_date;
+public class StoreDTO {
+    private String img_url;
+    private String store_name;
+    private String store_domain;
 }
-

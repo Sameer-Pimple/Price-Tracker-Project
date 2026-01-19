@@ -23,4 +23,7 @@ public class Store {
     @Column(nullable = false, length = 1000)
     private String baseUrl;
 
+    @Column(nullable = false, length = 1000)
+    private String logoUrl;
+
 }
