@@ -1,14 +1,12 @@
 package com.pricetracker.mapper;
 
-import com.pricetracker.DTO.GraphDataDTO;
-import com.pricetracker.DTO.ProductDTO;
+import com.pricetracker.DTO.Flipshope.GraphDataDTO;
 import com.pricetracker.entity.PriceHistory;
 import com.pricetracker.entity.Product;
 import com.pricetracker.entity.Store;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Component
 public class PriceHistoryMapper {

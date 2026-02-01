@@ -33,10 +33,5 @@ public class PriceHistory {
     private Integer price;
 
     private LocalDate date;
-    // automatically set when history record is inser
-    //  ted
-    @PrePersist
-    protected void onCreate() {
-        this.date = LocalDate.now();
-    }
+    // automatically set when history record is inserted
 }

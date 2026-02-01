@@ -2,6 +2,7 @@ package com.pricetracker.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
 
@@ -49,5 +50,6 @@ public class Product {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
 
 }

@@ -1,6 +1,6 @@
 package com.pricetracker.mapper;
 
-import com.pricetracker.DTO.ProductDTO;
+import com.pricetracker.DTO.Flipshope.ProductDTO;
 import com.pricetracker.entity.Product;
 import org.springframework.stereotype.Component;
 

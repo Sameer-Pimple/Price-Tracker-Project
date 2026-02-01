@@ -10,4 +10,5 @@ import java.util.Optional;
 @Repository
 public interface ProductRepo extends JpaRepository<Product, Long> {
     Optional<Product> findByPid(String pid);
+
 }
