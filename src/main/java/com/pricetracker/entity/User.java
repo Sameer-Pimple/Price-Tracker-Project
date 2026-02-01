@@ -29,22 +29,18 @@ public class User {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-    }
-
-
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
-
-
-
     // One user can have multiple alerts
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserAlert> alerts;
 
 
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }
 
