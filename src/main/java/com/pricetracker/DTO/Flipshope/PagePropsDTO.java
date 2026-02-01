@@ -1,4 +1,4 @@
-package com.pricetracker.DTO;
+package com.pricetracker.DTO.Flipshope;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -16,9 +16,16 @@ public class PagePropsDTO {
     @JsonProperty("getPData")
     private ProductDTO product;
 
-    private StoreDTO storeforProducts;
 
+    private List<StoreDTO> storeforProducts;
+
+    // PagePropsDTO
     private List<GraphDataDTO> graph_Products_details;
+
+    public List<GraphDataDTO> getGraph_Products_details() {
+        return graph_Products_details;
+    }
+
 
     private List<StoreSaleDTO> storeSalesData;
 

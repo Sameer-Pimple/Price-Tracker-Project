@@ -34,10 +34,13 @@ public class ProductSnapshots {
     private Integer MRP;
 
     @Column(nullable = false)
-    private Integer Rating;
+    private Double Rating;
 
-    @Column(nullable = false)
-    private Integer Stock;
+    @Column(nullable = true)
+    private String availability;
+
+    @Column(nullable = true)
+    private Integer discount;
 
 
     private LocalDateTime scapedAt;

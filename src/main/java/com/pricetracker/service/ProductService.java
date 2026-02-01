@@ -1,30 +1,16 @@
 package com.pricetracker.service;
 
-import com.pricetracker.DTO.ProductDTO;
+import com.pricetracker.DTO.Flipshope.ProductDTO;
 import com.pricetracker.entity.Product;
-import com.pricetracker.mapper.ProductMapper;
-import com.pricetracker.repository.ProductRepo;
-import org.springframework.stereotype.Service;
 
-@Service
-public class ProductService {
+import java.util.Optional;
 
-    private final ProductRepo repo;
-    private final ProductMapper mapper;
+public interface ProductService{
 
-    public ProductService(ProductRepo repo, ProductMapper mapper) {
-        this.repo = repo;
-        this.mapper = mapper;
-    }
+    Product getOrCreateProduct(ProductDTO dto);
 
-    public Product upsert(ProductDTO dto) {
+    Optional<Product> getProductById(Long id);
 
-        return repo.findByPid(dto.getPid())
-                .map(existing -> {
-                    existing.setTitle(dto.getTitle());
-                    existing.setCategory(dto.getCat());
-                    return repo.save(existing);
-                })
-                .orElseGet(() -> repo.save(mapper.toEntity(dto)));
-    }
+    Optional<Product> getProductByPid(String Pid);
+
 }

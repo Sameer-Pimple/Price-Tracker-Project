@@ -1,6 +1,6 @@
 package com.pricetracker.mapper;
 
-import com.pricetracker.DTO.ProductDTO;
+import com.pricetracker.DTO.Flipshope.ProductDTO;
 import com.pricetracker.entity.Product;
 import com.pricetracker.entity.ProductSnapshots;
 import com.pricetracker.entity.Store;
@@ -17,8 +17,8 @@ public class ProductSnapshotsMapper {
         p.setPrice(dto.getPrice());
         p.setMRP(dto.getMrp());
         p.setRating(dto.getRating());
-        p.setStock(dto.getStock());
         p.setScapedAt(LocalDateTime.now());
+        p.setDiscount(dto.getDiscount());
         return p;
     }
 }

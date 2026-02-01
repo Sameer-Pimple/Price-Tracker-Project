@@ -20,19 +20,14 @@ public class StoreSales {
     private Long id;
 
     @Column(nullable = false, length = 1000)
-    private String SaleName;
+    private String saleName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id", nullable = false)
     private Store store;
 
-    private LocalDateTime StartDate;
-    private LocalDateTime EndDate;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
 
-
-    @PrePersist
-    protected void onCreate() {
-        this.StartDate = LocalDateTime.now();
-    }
 
 }

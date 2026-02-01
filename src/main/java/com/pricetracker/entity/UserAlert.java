@@ -1,5 +1,6 @@
 package com.pricetracker.entity;
 
+import com.pricetracker.config.AlertType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,8 +21,8 @@ public class UserAlert {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long alertId;
 
-    private Integer targetPrice;
-    private Boolean isActive;
+    private Double targetPrice;
+    private AlertType type;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

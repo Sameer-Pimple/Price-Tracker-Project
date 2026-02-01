@@ -1,4 +1,4 @@
-package com.pricetracker.DTO;
+package com.pricetracker.DTO.Flipshope;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
@@ -7,10 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class StoreSaleDTO {
-
-    private String sale_name;
-    private String start_date;
-    private String end_date;
+public class TrackRequestDTO {
+    private String url;
 }
-

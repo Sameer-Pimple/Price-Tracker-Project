@@ -19,7 +19,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private Long id;
 
     private String username;
     private String password;
@@ -34,7 +34,7 @@ public class User {
         this.createdAt = LocalDateTime.now();
     }
 
-    @PrePersist
+
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }

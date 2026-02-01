@@ -1,4 +1,4 @@
-package com.pricetracker.DTO;
+package com.pricetracker.DTO.Flipshope;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
@@ -15,13 +15,12 @@ public class ProductDTO {
     private String pid;
     private Integer sid;
     private Integer price;
-    private Integer stock;
     private String time;
     private String cat;
     private Integer mrp;
-    private Integer rating;
+    private Double rating;
     private String title;
-
+    private Integer discount;
     private String imgurl;
 
     private List<GraphDataDTO> graph_data;
