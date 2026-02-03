@@ -21,6 +21,7 @@ target/
 
 ### Congiguration files###
 application-*.yml
+application-*.yaml
 application-*.properties
 
 
