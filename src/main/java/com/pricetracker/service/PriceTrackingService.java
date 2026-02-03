@@ -80,7 +80,7 @@ public class PriceTrackingService {
                 history.setProduct(product);
                 history.setPrice(dto.getPrice());
                 history.setDate(LocalDate.now());
-
+                history.setStore(snapshotOpt.get().getStore());
                 priceHistoryRepo.save(history);
             }
 
