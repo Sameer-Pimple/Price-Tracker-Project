@@ -3,6 +3,7 @@ package com.pricetracker.service.ScrapersService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pricetracker.DTO.Flipshope.RootDTO;
 import com.pricetracker.util.ScraperHelper;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -14,20 +15,17 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Random;
 
+@Slf4j
 @Service
 public class FlipshopeScraperService {
     private static final int AMAZON_SID = 2;
-    private final ScraperHelper scraperHelper;
     private final ObjectMapper objectMapper;
 
-    public FlipshopeScraperService(ScraperHelper scraperHelper,
-                                   ObjectMapper objectMapper) {
-        this.scraperHelper = scraperHelper;
+    public FlipshopeScraperService(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
     // ===== PROXY LIST =====
-    // Empty list = direct IP
     private static final List<String> PROXY_LIST = List.of(
             // "username:password@proxy-host:port",
             // "username:password@proxy-host:port"
@@ -96,19 +94,48 @@ public class FlipshopeScraperService {
 
             // short human-like pause
             Thread.sleep(1200 + random.nextInt(800));
-//
-//            if (isBlocked(driver)) {
-//                throw new RuntimeException("IP BLOCKED / CAPTCHA DETECTED");
-//            }
+
 
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("productTitle")));
 
 
 
-            if (scraperHelper.shouldScroll()) {
-                scraperHelper.randomScroll(driver);
+            if (ScraperHelper.shouldScroll()) {
+                ScraperHelper.randomScroll(driver);
             }
 
+            // JavaScript Executer to gets values Using JS
+            JavascriptExecutor js = (JavascriptExecutor) driver;
+
+            //Rating
+            String rating = "";
+            try {
+                rating = (String) js.executeScript("return document.querySelector('#acrPopover span.a-size-small.a-color-base').textContent;");
+            } catch (Exception e) {
+                log.error("Scraping Rating failed", e);
+            }
+
+            // Availability
+            String availability = "";
+            try {
+                availability = driver.findElement(By.id("availability")).getText().trim();
+            } catch (Exception ignored) {
+            }
+
+
+            // Discount
+            String discount = "";
+            try {
+                discount = (String) js.executeScript("""
+                            let el = document.querySelector('span.savingsPercentage');
+                            if (!el) return '';
+                            let txt = el.textContent;   // "-65%"
+                            let nums = txt.match(/\\d+/g);
+                            return nums ? nums.join('') : '';
+                        """);
+            } catch (Exception e) {
+                log.error("Scraping Discount failed", e);
+            }
 
 
             String title = driver.findElement(By.id("productTitle"))
@@ -124,7 +151,7 @@ public class FlipshopeScraperService {
                     .replaceAll("\\s+", "-");
 
             // ===== Extract ASIN =====
-            String asin = scraperHelper.extractAsin(userUrl);
+            String asin = ScraperHelper.extractAsin(userUrl);
             if (asin == null) {
                 throw new RuntimeException("ASIN not found in Amazon URL");
             }
@@ -139,13 +166,13 @@ public class FlipshopeScraperService {
             driver.get(flipshopePageUrl);
             Thread.sleep(2000); // small wait for page load
 
-            if (scraperHelper.isBlocked(driver)) {
+            if (ScraperHelper.isBlocked(driver)) {
                 throw new RuntimeException("FLIPSHOPE BLOCKED / CAPTCHA");
             }
 
 
 // Extract fresh buildId dynamically
-            String buildId = scraperHelper.extractBuildId(driver);
+            String buildId = ScraperHelper.extractBuildId(driver);
 
 // Now build JSON URL dynamically
             String flipshopeJsonUrl =
@@ -166,6 +193,9 @@ public class FlipshopeScraperService {
             String json = driver.findElement(By.tagName("pre")).getText();
 
             RootDTO dto = objectMapper.readValue(json, RootDTO.class);
+            dto.setRating(rating);
+            dto.setAvailability(availability);
+            dto.setDiscount(discount);
             return dto;
 
 

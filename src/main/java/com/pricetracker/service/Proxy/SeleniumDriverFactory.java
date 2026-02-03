@@ -14,12 +14,14 @@ public class SeleniumDriverFactory {
 
     // Add proxies here or leave empty to get direct local IP
     private final List<String> proxies = List.of(
-            "" // empty = local IP
+            ""
+            // "username:password@proxy-host:port",
+            // "username:password@proxy-host:port"
     );
 
     public WebDriver createDriver() {
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless");
+//        options.addArguments("--headless");
         options.addArguments("--disable-gpu");
         options.addArguments("--no-sandbox");
         options.addArguments("--window-size=1920,1080");

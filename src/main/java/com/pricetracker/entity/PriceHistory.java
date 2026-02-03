@@ -33,5 +33,5 @@ public class PriceHistory {
     private Integer price;
 
     private LocalDate date;
-    // automatically set when history record is inserted
+
 }

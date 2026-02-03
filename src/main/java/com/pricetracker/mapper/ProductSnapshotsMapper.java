@@ -19,6 +19,7 @@ public class ProductSnapshotsMapper {
         p.setRating(dto.getRating());
         p.setScapedAt(LocalDateTime.now());
         p.setDiscount(dto.getDiscount());
+        p.setAvailability(dto.getAvailability());
         return p;
     }
 }
