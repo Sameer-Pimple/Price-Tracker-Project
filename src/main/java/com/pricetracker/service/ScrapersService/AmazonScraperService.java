@@ -29,8 +29,6 @@ public class AmazonScraperService {
     }
 
 
-
-
     public Optional<ScraperDTO> scrapeAmazonProduct(String userUrl) {
 
         ScraperDTO dto = new ScraperDTO();
@@ -57,7 +55,7 @@ public class AmazonScraperService {
             // set default behaviour to wait for load page
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-            // JavaScript Executer to gets values Using JS
+            // JavaScript Execute to gets values Using JS
             JavascriptExecutor js = (JavascriptExecutor) driver;
 
             // Price

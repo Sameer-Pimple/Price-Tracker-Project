@@ -11,11 +11,9 @@ import java.util.Optional;
 @Service
 public class ProductServiceImpl implements ProductService{
     private final ProductRepo repo;
-    private final ProductMapper mapper;
 
-    public ProductServiceImpl(ProductRepo repo, ProductMapper mapper) {
+    public ProductServiceImpl(ProductRepo repo) {
         this.repo = repo;
-        this.mapper = mapper;
     }
 
     @Override

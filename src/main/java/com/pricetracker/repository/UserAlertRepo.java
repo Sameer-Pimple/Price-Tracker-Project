@@ -11,8 +11,5 @@ import java.util.List;
 public interface UserAlertRepo extends JpaRepository<UserAlert, Long> {
     List<UserAlert> findByUserId(Long userId);
 
-    List<UserAlert> findByProductIdAndType(
-            Long productId,
-            AlertType type
-    );
+    List<UserAlert> findByProductIdAndType(Long productId, AlertType type);
 }

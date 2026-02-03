@@ -2,7 +2,6 @@ package com.pricetracker.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
 

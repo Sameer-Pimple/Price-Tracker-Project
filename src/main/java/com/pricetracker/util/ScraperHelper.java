@@ -13,9 +13,9 @@ import java.util.regex.Pattern;
 public class ScraperHelper {
     private static final Pattern ASIN_PATTERN =
             Pattern.compile("/([A-Z0-9]{10})(?:[/?]|$)");
-    public ScraperHelper(){}
 
-    public void randomScroll(WebDriver driver) throws InterruptedException {
+
+    public static void randomScroll(WebDriver driver) throws InterruptedException {
         Random random = new Random();
         JavascriptExecutor js = (JavascriptExecutor) driver;
 
@@ -45,12 +45,12 @@ public class ScraperHelper {
         }
     }
 
-    public boolean shouldScroll() {
+    public static boolean shouldScroll() {
         // 30–40% chance of scrolling
         return new Random().nextInt(100) < 35;
     }
 
-    public boolean isBlocked(WebDriver driver) {
+    public static boolean isBlocked(WebDriver driver) {
         String pageSource = driver.getPageSource().toLowerCase();
 
         return pageSource.contains("captcha")
@@ -60,7 +60,7 @@ public class ScraperHelper {
     }
 
 
-    public String extractBuildId(WebDriver driver) {
+    public static String extractBuildId(WebDriver driver) {
         WebElement nextDataScript = driver.findElement(By.id("__NEXT_DATA__"));
         String json = nextDataScript.getAttribute("innerHTML");
 

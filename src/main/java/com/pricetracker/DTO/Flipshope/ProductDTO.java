@@ -22,6 +22,7 @@ public class ProductDTO {
     private String title;
     private Integer discount;
     private String imgurl;
+    private String availability;
 
     private List<GraphDataDTO> graph_data;
 

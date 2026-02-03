@@ -10,7 +10,9 @@ import lombok.Setter;
 public class RootDTO {
 
     private PagePropsDTO pageProps;
-
+    private  String rating;
+    private String availability;
+    private String discount;
 }
 
 

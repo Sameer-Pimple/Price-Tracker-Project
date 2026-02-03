@@ -24,7 +24,6 @@ public class ScraperController {
     @PostMapping(value = "/amazon", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Optional<ScraperDTO> scrapeAmazon(@RequestBody Map<String, String> request) {
 
-        // User sent URL in JSON { "url": "https://www.amazon.in/dp/B0FMDL81GS" }
         String userUrl = request.get("url");
 
         // Call amz service to scrape data & return jsonString postman usko json me dikha raha hai yaha se string me hi ja raha hai..

@@ -103,14 +103,20 @@ public class PriceTrackingService {
         if (storeSaleList == null || storeSaleList.isEmpty())
             throw new RuntimeException("No store sales data");
 
-        StoreDTO storeDTO = stores.get(0);
+        StoreDTO storeDTO = stores.getFirst();
 
 // 🔥 MERGE ID FROM SALES DATA
-        storeDTO.setStore_id(storeSaleList.get(0).getStoreId());
+        storeDTO.setStore_id(storeSaleList.getFirst().getStoreId());
 
         Store store = storeService.getOrCreateStore(storeDTO);
 
         ProductDTO productDTO = pagePropsDTO.getProduct();
+
+        //here we are setting the filed which is not in flipshope json so we are extract from Amazon pages while url fetching...
+        productDTO.setRating(Double.valueOf(rootDTO.getRating()));
+        productDTO.setAvailability(rootDTO.getAvailability());
+        productDTO.setDiscount(Integer.valueOf(rootDTO.getDiscount()));
+
 
         List<GraphDataDTO> graphDataList = pagePropsDTO.getGraph_Products_details();
 
