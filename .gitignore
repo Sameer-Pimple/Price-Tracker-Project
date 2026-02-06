@@ -20,9 +20,9 @@ target/
 *.ipr
 
 ### Congiguration files###
-application-*.yml
-application-*.yaml
-application-*.properties
+application*.yml
+application*.yaml
+application*.properties
 
 
 ### NetBeans ###
