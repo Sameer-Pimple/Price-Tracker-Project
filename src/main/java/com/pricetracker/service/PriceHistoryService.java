@@ -5,6 +5,7 @@ import com.pricetracker.entity.Product;
 import com.pricetracker.entity.Store;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface PriceHistoryService {
@@ -13,5 +14,5 @@ public interface PriceHistoryService {
 
     void saveHistory(Product product, Store store, List<GraphDataDTO> graphList);
 
-    List<PriceHistory> getHistory(Long productId, Long storeId);
+    List<PriceHistory> getHistoryByProductId(Long productId);
 }

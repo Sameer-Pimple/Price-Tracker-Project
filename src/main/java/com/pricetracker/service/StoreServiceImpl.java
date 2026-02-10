@@ -23,7 +23,7 @@ public class StoreServiceImpl implements StoreService{
                 .orElseGet(() -> {
 
                     Store s = new Store();
-                    s.setId(dto.getStore_id());
+                    s.setId(Long.valueOf(2));
                     s.setName(dto.getStore_name());
                     s.setBaseUrl(dto.getStore_domain());
                     s.setLogoUrl(dto.getImg_url());

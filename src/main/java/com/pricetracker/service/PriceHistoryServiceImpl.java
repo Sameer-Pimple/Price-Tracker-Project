@@ -35,7 +35,7 @@ public class PriceHistoryServiceImpl implements PriceHistoryService {
         if (dto == null) return;
 
         // Convert String time to LocalDate
-        LocalDate graphDate = LocalDate.parse(dto.getTime()); // assuming dto.getTime() format is "yyyy-MM-dd"
+        LocalDate graphDate = dto.getTime(); // assuming dto.getTime() format is "yyyy-MM-dd"
 
         // Check if same date entry exists
         Optional<PriceHistory> latestOpt = repo.findTopByProductAndStoreOrderByDateDesc(product, store);
@@ -66,14 +66,8 @@ public class PriceHistoryServiceImpl implements PriceHistoryService {
 
 
     @Override
-    public List<PriceHistory> getHistory(Long productId, Long storeId) {
+    public List<PriceHistory> getHistoryByProductId(Long productId) {
 
-        Product product = productRepo.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
-
-        Store store = storeRepo.findById(storeId)
-                .orElseThrow(() -> new RuntimeException("Store not found"));
-
-        return repo.findByProductAndStoreOrderByDateAsc(product, store);
+        return repo.findAllByProduct_IdOrderByDateAsc(productId);
     }
 }

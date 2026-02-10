@@ -16,7 +16,7 @@ public class PriceHistoryMapper {
         ph.setProduct(product);
         ph.setStore(store);
         ph.setPrice(dto.getMin_price());
-        ph.setDate(LocalDate.parse(dto.getTime()));
+        ph.setDate(dto.getTime());
         return ph;
     }
 }

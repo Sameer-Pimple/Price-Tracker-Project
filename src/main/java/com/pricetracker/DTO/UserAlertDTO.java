@@ -9,9 +9,5 @@ import lombok.Setter;
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserAlertDTO {
-    private Long userId;
-    private Long productId;
     private Double targetPrice;
-    private AlertType type;
-
 }

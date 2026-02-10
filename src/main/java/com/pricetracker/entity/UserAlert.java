@@ -37,6 +37,5 @@ public class UserAlert {
     @JoinColumn(name = "product_id", referencedColumnName = "id", nullable = false)
     private Product product;
 
-
 }
 

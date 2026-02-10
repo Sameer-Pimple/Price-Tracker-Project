@@ -1,6 +1,8 @@
-package com.pricetracker.DTO.Flipshope;
+package com.pricetracker.DTO;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.pricetracker.DTO.Flipshope.GraphDataDTO;
+import com.pricetracker.entity.PriceHistory;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,26 +11,16 @@ import java.util.List;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ProductDTO {
-
-
+public class ProductDetailsDTO {
     private String pid;
-    private Integer sid;
     private Integer price;
-    private String time;
-    private String cat;
     private Integer mrp;
     private Double rating;
     private String title;
     private Integer discount;
     private String imgurl;
     private String availability;
-
-    private List<GraphDataDTO> graph_data;
-
-    private String store_name;
-    private String store_domain;
     private String store_imgurl;
 
-
+    private List<GraphDataDTO> graph_data;
 }

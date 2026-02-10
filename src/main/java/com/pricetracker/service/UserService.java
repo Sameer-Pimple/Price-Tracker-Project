@@ -1,5 +1,6 @@
 package com.pricetracker.service;
 
+import com.pricetracker.DTO.UserCreateRequest;
 import com.pricetracker.entity.User;
 
 import java.util.Optional;
@@ -7,7 +8,7 @@ import java.util.Optional;
 
 public interface UserService {
 
-    void createUser(User user);
+    void createUser(UserCreateRequest userCreateRequest);
 
     void saveUser(User user);
 

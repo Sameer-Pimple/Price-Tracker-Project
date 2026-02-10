@@ -1,5 +1,6 @@
 package com.pricetracker.repository;
 
+import com.pricetracker.DTO.Flipshope.GraphDataDTO;
 import com.pricetracker.entity.PriceHistory;
 import com.pricetracker.entity.Product;
 import com.pricetracker.entity.Store;
@@ -16,6 +17,10 @@ public interface PriceHistoryRepo extends JpaRepository<PriceHistory, Long> {
     List<PriceHistory> findByProductAndStoreOrderByDateAsc(Product product, Store store);
 
     Optional<PriceHistory> findTopByProductAndStoreOrderByDateDesc(Product product, Store store);
+
+    List<PriceHistory> findAllByProduct_IdOrderByDateAsc(Long productId);
+
+    List<PriceHistory> findAllByProduct_IdOrderByDateDesc(Long productID);
 
     boolean existsByProductAndDate(Product product, LocalDate now);
 }

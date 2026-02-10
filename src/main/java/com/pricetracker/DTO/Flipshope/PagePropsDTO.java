@@ -22,9 +22,7 @@ public class PagePropsDTO {
     // PagePropsDTO
     private List<GraphDataDTO> graph_Products_details;
 
-    public List<GraphDataDTO> getGraph_Products_details() {
-        return graph_Products_details;
-    }
+
 
 
     private List<StoreSaleDTO> storeSalesData;
