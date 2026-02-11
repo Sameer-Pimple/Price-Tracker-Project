@@ -1,0 +1,33 @@
+/* AppLayout.css */
+.app-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--bg-app, #f8fafc);
+}
+
+.app-body {
+    display: flex;
+    flex: 1;
+    width: 100%;
+}
+
+.app-main {
+    flex: 1;
+    width: 100%;
+    /* Controls max-width as requested */
+    max-width: 1400px;
+    /* Controls horizontal padding */
+    padding: 2rem var(--spacing-md);
+    /* Aligns content left (default block behavior) - explicit reset just in case */
+    margin-left: 0;
+    margin-right: auto;
+    box-sizing: border-box;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .app-main {
+        padding: 1rem var(--spacing-sm);
+    }
+}

@@ -1,0 +1,194 @@
+/* Product Page Specific Styles */
+.product-container {
+    padding-bottom: 2rem;
+    max-width: 1000px;
+    /* Slightly wider for flat layout */
+}
+
+/* Flattened Header */
+.product-header {
+    display: flex;
+    gap: 3rem;
+    align-items: flex-start;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+}
+
+.product-image-container {
+    flex: 0 0 350px;
+    background-color: var(--surface-color);
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 350px;
+}
+
+.product-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.product-info {
+    flex: 1;
+    min-width: 300px;
+}
+
+.product-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--heading-color);
+    margin: 0 0 1rem 0;
+    line-height: 1.3;
+}
+
+/* Dominant Price */
+.price-block {
+    margin: 2rem 0;
+    /* Spacious */
+}
+
+.current-price {
+    font-size: 4.5rem;
+    /* Massive */
+    font-weight: 800;
+    color: var(--heading-color);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+}
+
+.mrp-price {
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    text-decoration: line-through;
+    font-weight: 500;
+}
+
+.discount-badge {
+    font-size: 1.5rem;
+    color: var(--success-color);
+    font-weight: 700;
+    background: var(--success-bg);
+    padding: 0.25rem 0.75rem;
+    border-radius: 8px;
+    vertical-align: middle;
+}
+
+/* Intelligence Strip */
+.intelligence-strip {
+    display: flex;
+    gap: 2rem;
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    margin: 2rem 0;
+    overflow-x: auto;
+}
+
+.intel-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 100px;
+}
+
+.intel-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+}
+
+.intel-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--heading-color);
+}
+
+.action-bar {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+/* Live Badge Repositioned */
+.live-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--success-color);
+    font-weight: 600;
+    font-size: 0.875rem;
+    background: var(--success-bg);
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    .product-header {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .product-image-container {
+        flex: auto;
+        width: 100%;
+        height: 300px;
+    }
+
+    .current-price {
+        font-size: 3.5rem;
+        flex-wrap: wrap;
+    }
+}
+
+/* Mobile essentials (<=480px) */
+@media (max-width: 480px) {
+    .product-container {
+        padding-bottom: 1.5rem;
+    }
+
+    .product-header {
+        gap: 1.25rem;
+        margin-bottom: 2rem;
+    }
+
+    .product-image-container {
+        height: 240px;
+        padding: 0.75rem;
+    }
+
+    .product-title {
+        font-size: 1.25rem;
+    }
+
+    .current-price {
+        font-size: 2.75rem;
+        gap: 0.75rem;
+    }
+
+    .mrp-price,
+    .discount-badge {
+        font-size: 1.1rem;
+    }
+
+    .intelligence-strip {
+        gap: 1.25rem;
+        padding: 1rem 0;
+        margin: 1.5rem 0;
+    }
+
+    .action-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

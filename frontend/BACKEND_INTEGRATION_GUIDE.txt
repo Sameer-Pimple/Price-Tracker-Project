@@ -1,0 +1,67 @@
+BACKEND INTEGRATION GUIDE
+=========================
+
+This document outlines the locations and requirements for connecting the React frontend to a real backend.
+
+1. API SERVICE LAYER
+   Location: src/services/api.js
+   ----------------------------
+   This file contains all the functions that communicate with the backend.
+   Replace the `setTimeout` mock promises with real `fetch` or `axios` calls.
+
+   a) trackProduct(url)
+      - Goal: Start tracking a new product.
+      - HTTP Method: POST
+      - Endpoint: /api/products/track
+      - Request Body: { "url": "https://amazon.in/..." }
+      - Expected Response: { "id": "prod_123", "status": "active", "message": "..." }
+
+   b) getProductById(id)
+      - Goal: Get current details for a specific product.
+      - HTTP Method: GET
+      - Endpoint: /api/products/:id
+      - Expected Response: 
+        {
+          "id": "...",
+          "title": "...",
+          "currentPrice": 29990,
+          "currency": "INR",
+          "image": "...",
+          "url": "..."
+        }
+
+   c) getPriceHistory(id)
+      - Goal: Get list of historical prices for the chart.
+      - HTTP Method: GET
+      - Endpoint: /api/products/:id/history
+      - Query Params: ?range=7d (or 30d, 6m)
+      - Expected Response: 
+        [
+          { "date": "2023-10-01", "price": 100 },
+          { "date": "2023-10-02", "price": 98 }
+        ]
+
+
+2. HOME PAGE LOGIC
+   Location: src/pages/Home.jsx
+   ----------------------------
+   - See `handleUrlSubmit` function.
+   - The frontend sends the raw URL to the backend.
+   - The BACKEND is responsible for:
+     1. Validating the URL.
+     2. Extracting the unique ASIN/ID.
+     3. Returning the internal `id` so the frontend can navigate to `/product/:id`.
+
+
+3. PRODUCT PAGE DATA
+   Location: src/pages/Product.jsx
+   -------------------------------
+   - "Price Summary" section (Lowest, Highest, Average) currently uses static usage.
+   - Ideally, extend the `getProductById` API response to include these pre-calculated statistics so the frontend doesn't have to compute them.
+
+
+4. HISTORY PAGE FILTERS
+   Location: src/pages/History.jsx
+   -------------------------------
+   - The time range buttons (7 Days, 30 Days, 6 Months) act as UI placeholders.
+   - You need to implement filtering logic on the server side (e.g., accepting a `range` query parameter) so that clicking these buttons can fetch filtered data.
