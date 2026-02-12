@@ -208,7 +208,7 @@ const Home = () => {
                           {"☆".repeat(5 - Math.floor(product.rating || 0))}
                         </div>
                         <span className="rating-value">
-                          {product.rating.toLocaleString()}
+                          {product.rating.toFixed(1)}
                         </span>
                       </div>
 
