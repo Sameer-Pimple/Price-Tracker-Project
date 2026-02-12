@@ -10,7 +10,7 @@ import lombok.Setter;
 public class ScraperDTO {
     private Integer Price;
     private Integer MRP;
-    private Double Rating;
+    private Float Rating;
     private String availability;
     private Integer discount;
 }

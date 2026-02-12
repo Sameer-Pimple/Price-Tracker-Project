@@ -113,7 +113,7 @@ public class PriceTrackingService {
         ProductDTO productDTO = pagePropsDTO.getProduct();
 
         //here we are setting the filed which is not in flipshope json so we are extract from Amazon pages while url fetching...
-        productDTO.setRating(Double.valueOf(rootDTO.getRating()));
+        productDTO.setRating(Float.valueOf(rootDTO.getRating()));
         productDTO.setAvailability(rootDTO.getAvailability());
         productDTO.setDiscount(Integer.valueOf(rootDTO.getDiscount()));
 

@@ -18,7 +18,7 @@ public class ProductDTO {
     private String time;
     private String cat;
     private Integer mrp;
-    private Double rating;
+    private Float rating;
     private String title;
     private Integer discount;
     private String imgurl;

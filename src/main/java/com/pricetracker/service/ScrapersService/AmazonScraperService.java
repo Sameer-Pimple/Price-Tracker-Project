@@ -129,7 +129,7 @@ public class AmazonScraperService {
 
             dto.setPrice(Integer.valueOf(price));
             dto.setMRP(Integer.valueOf(mrp));
-            dto.setRating(Double.valueOf(rating));
+            dto.setRating(Float.valueOf(rating));
             dto.setAvailability(availability);
             dto.setDiscount(Integer.valueOf(discount));
             return Optional.of(dto);

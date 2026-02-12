@@ -15,7 +15,7 @@ public class ProductDetailsDTO {
     private String pid;
     private Integer price;
     private Integer mrp;
-    private Double rating;
+    private Float rating;
     private String title;
     private Integer discount;
     private String imgurl;

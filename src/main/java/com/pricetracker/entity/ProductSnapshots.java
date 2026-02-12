@@ -34,7 +34,7 @@ public class ProductSnapshots {
     private Integer MRP;
 
     @Column(nullable = false)
-    private Double Rating;
+    private Float Rating;
 
     @Column(nullable = true)
     private String availability;
