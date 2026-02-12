@@ -1,7 +1,0 @@
-/* App.css — Global App Container */
-
-.App {
-  min-height: 100vh;
-  background-color: var(--bg-app);
-  color: var(--text-primary);
-}
