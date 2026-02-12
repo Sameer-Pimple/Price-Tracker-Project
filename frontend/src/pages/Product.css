@@ -63,21 +63,30 @@
     gap: 1rem;
 }
 
-.mrp-price {
-    font-size: 1.5rem;
-    color: var(--text-muted);
-    text-decoration: line-through;
-    font-weight: 500;
+.card-mrp {
+  font-size: 0.7rem;
+  color: #9ca3af;
+  text-decoration: line-through;
+  margin-left: 0.2rem;
+}
+
+.card-mrp-label{
+    font-size: 0.7rem;
+  color: #9ca3af;
 }
 
 .discount-badge {
-    font-size: 1.5rem;
+    
     color: var(--success-color);
     font-weight: 700;
     background: var(--success-bg);
     padding: 0.25rem 0.75rem;
     border-radius: 8px;
-    vertical-align: middle;
+  display: inline-flex;        /* better than inline-block */
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  white-space: nowrap;   
 }
 
 /* Intelligence Strip */

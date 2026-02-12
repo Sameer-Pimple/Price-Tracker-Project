@@ -19,8 +19,7 @@
     max-width: 1400px;
     /* Controls horizontal padding */
     padding: 2rem var(--spacing-md);
-    /* Aligns content left (default block behavior) - explicit reset just in case */
-    margin-left: 0;
+   
     margin-right: auto;
     box-sizing: border-box;
 }

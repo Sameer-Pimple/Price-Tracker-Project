@@ -6,42 +6,90 @@
  */
 
 export const MOCK_PRODUCTS = [
-    {
-        id: "prod_1",
-        title: "Sony WH-1000XM5 Wireless Noise Cancelling Headphones",
-        price: {
-            current: 29990,
-            currency: "INR",
-            discount: 14
-        },
-        image: "https://m.media-amazon.com/images/I/61+elFLgckL._SL1500_.jpg",
-        status: "TRACKING",
-        lastChecked: new Date(Date.now() - 1000 * 60 * 30).toISOString() // 30 mins ago
+  {
+    id: "prod_1",
+    title: "Sony WH-1000XM5 Wireless Noise Cancelling Headphones",
+    price: {
+      current: 29990,
+      currency: "INR",
+      discount: 14,
     },
-    {
-        id: "prod_2",
-        title: "Apple MacBook Air 15-inch M2 Chip",
-        price: {
-            current: 114900,
-            currency: "INR",
-            discount: 8
-        },
-        image: "https://m.media-amazon.com/images/I/71S4sIPFvBL._SL1500_.jpg",
-        status: "TRACKING",
-        lastChecked: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString() // 2 hours ago
+    image: "https://m.media-amazon.com/images/I/61+elFLgckL._SL1500_.jpg",
+    status: "TRACKING",
+    lastChecked: new Date(Date.now() - 1000 * 60 * 30).toISOString(), // 30 mins ago
+  },
+  {
+    id: "prod_2",
+    title: "Apple MacBook Air 15-inch M2 Chip",
+    price: {
+      current: 114900,
+      currency: "INR",
+      discount: 8,
     },
-    {
-        id: "prod_3",
-        title: "Samsung Galaxy S24 Ultra 5G AI Smartphone",
-        price: {
-            current: 129999,
-            currency: "INR",
-            discount: 0
-        },
-        image: "https://m.media-amazon.com/images/I/81vxWpPpgNL._SL1500_.jpg",
-        status: "OUT_OF_STOCK",
-        lastChecked: new Date(Date.now() - 1000 * 60 * 5).toISOString() // 5 mins ago
-    }
+    image: "https://m.media-amazon.com/images/I/71S4sIPFvBL._SL1500_.jpg",
+    status: "TRACKING",
+    lastChecked: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), // 2 hours ago
+  },
+  {
+    id: "prod_3",
+    title: "Samsung Galaxy S24 Ultra 5G AI Smartphone",
+    price: {
+      current: 129999,
+      currency: "INR",
+      discount: 0,
+    },
+    image: "https://m.media-amazon.com/images/I/81vxWpPpgNL._SL1500_.jpg",
+    status: "OUT_OF_STOCK",
+    lastChecked: new Date(Date.now() - 1000 * 60 * 5).toISOString(), // 5 mins ago
+  },
+  {
+    id: "prod_1",
+    title: "Sony WH-1000XM5 Wireless Noise Cancelling Headphones",
+    price: {
+      current: 29990,
+      currency: "INR",
+      discount: 14,
+    },
+    image: "https://m.media-amazon.com/images/I/61+elFLgckL._SL1500_.jpg",
+    status: "TRACKING",
+    lastChecked: new Date(Date.now() - 1000 * 60 * 30).toISOString(), // 30 mins ago
+  },
+  {
+    id: "prod_2",
+    title: "Apple MacBook Air 15-inch M2 Chip",
+    price: {
+      current: 114900,
+      currency: "INR",
+      discount: 8,
+    },
+    image: "https://m.media-amazon.com/images/I/71S4sIPFvBL._SL1500_.jpg",
+    status: "TRACKING",
+    lastChecked: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), // 2 hours ago
+  },
+  {
+    id: "prod_1",
+    title: "Sony WH-1000XM5 Wireless Noise Cancelling Headphones",
+    price: {
+      current: 29990,
+      currency: "INR",
+      discount: 14,
+    },
+    image: "https://m.media-amazon.com/images/I/61+elFLgckL._SL1500_.jpg",
+    status: "TRACKING",
+    lastChecked: new Date(Date.now() - 1000 * 60 * 30).toISOString(), // 30 mins ago
+  },
+  {
+    id: "prod_2",
+    title: "Apple MacBook Air 15-inch M2 Chip",
+    price: {
+      current: 114900,
+      currency: "INR",
+      discount: 8,
+    },
+    image: "https://m.media-amazon.com/images/I/71S4sIPFvBL._SL1500_.jpg",
+    status: "TRACKING",
+    lastChecked: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), // 2 hours ago
+  },
 ];
 
 export const MOCK_PRODUCT_DETAILS = {

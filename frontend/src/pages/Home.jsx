@@ -82,107 +82,177 @@ const Home = () => {
     };
 
     return (
-        <div style={{ paddingBottom: '4rem' }}>
-
-            {/* Dashboard Input Section - Top of Flow */}
-            <div className="dashboard-header">
-                <form onSubmit={handleUrlSubmit} className="track-input-form">
-                    <div className="input-group-unified">
-                        <input
-                            type="url"
-                            name="url-input"
-                            placeholder="Paste multiple Amazon URLs..."
-                            required
-                            className="input-unified"
-                            disabled={trackState === 'tracking'}
-                        />
-                        <button
-                            type="submit"
-                            disabled={trackState === 'tracking'}
-                            className="btn-unified"
-                        >
-                            {trackState === 'tracking' ? 'Tracking...' : 'Track Product'}
-                        </button>
-                    </div>
-                </form>
+      <div style={{ paddingBottom: "4rem" }}>
+        {/* Dashboard Input Section - Top of Flow */}
+        <div className="dashboard-header">
+          <form onSubmit={handleUrlSubmit} className="track-input-form">
+            <div className="input-group-unified">
+              <input
+                type="url"
+                name="url-input"
+                placeholder="Paste multiple Amazon URLs..."
+                required
+                className="input-unified"
+                disabled={trackState === "tracking"}
+              />
+              <button
+                type="submit"
+                disabled={trackState === "tracking"}
+                className="btn-unified"
+              >
+                {trackState === "tracking" ? "Tracking..." : "Track Product"}
+              </button>
             </div>
-
-            {/* Main Content Area */}
-            <div>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
-                    <h3 style={{ margin: 0, color: 'var(--heading-color)', fontSize: '1.25rem' }}>Your Tracking List</h3>
-                    {products.length > 0 && <span className="badge badge-neutral">{products.length} Products</span>}
-                </div>
-
-                {/* Product List Section */}
-                <section style={{ padding: 0, background: 'transparent', boxShadow: 'none', border: 'none' }}>
-                    {pageState === 'loading' && <LoadingState message="Syncing your dashboard..." />}
-
-                    {pageState === 'error' && (
-                        <ErrorState
-                            message={errorMessage}
-                            onRetry={handleRetry}
-                        />
-                    )}
-
-                    {pageState === 'success' && products.length === 0 && (
-                        <EmptyState message="Your dashboard is empty.">
-                            <p className="text-muted">Paste an Amazon link above to start tracking prices.</p>
-                        </EmptyState>
-                    )}
-
-                    {pageState === 'success' && products.length > 0 && (
-                        <div className="product-card-grid">
-                            {products.map(product => (
-                                <div
-                                    key={product.id || Math.random()}
-                                    onClick={() => product.id && navigate(`/product/${product.id}`)}
-                                    className="product-card"
-                                    role="button"
-                                    tabIndex={0}
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter' && product.id) navigate(`/product/${product.id}`);
-                                    }}
-                                >
-                                    <div className="card-image-wrap">
-                                        <img
-                                            src={product.image || 'https://via.placeholder.com/220'}
-                                            alt={product.title}
-                                            className="card-image"
-                                        />
-                                    </div>
-
-                                    <div className="card-body">
-                                        <div className="card-title-row">
-                                            <h4 className="card-title">{product.title}</h4>
-                                            <span
-                                                className={`card-status ${product.status === 'TRACKING' ? 'status-active' : 'status-error'}`}
-                                                title={`Status: ${product.status}`}
-                                            ></span>
-                                        </div>
-
-                                        <div className="card-meta">
-                                            checked {formatRelativeTime(product.lastChecked)}
-                                        </div>
-
-                                        <div className="card-price-row">
-                                            <span className="card-price">
-                                                ₹{(product.price?.current || 0).toLocaleString()}
-                                            </span>
-                                            {product.price?.discount > 0 && (
-                                                <span className="card-discount">
-                                                    -{product.price.discount}%
-                                                </span>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </section>
-            </div>
+          </form>
         </div>
+
+        {/* Main Content Area */}
+        <div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: "1.5rem",
+            }}
+          >
+            <h3
+              style={{
+                margin: 0,
+                color: "var(--heading-color)",
+                fontSize: "1.25rem",
+              }}
+            >
+              Your Tracking List
+            </h3>
+            {products.length > 0 && (
+              <span className="badge badge-neutral">
+                {products.length} Products
+              </span>
+            )}
+          </div>
+
+          {/* Product List Section */}
+          <section
+            style={{
+              padding: 0,
+              background: "transparent",
+              boxShadow: "none",
+              border: "none",
+            }}
+          >
+            {pageState === "loading" && (
+              <LoadingState message="Syncing your dashboard..." />
+            )}
+
+            {pageState === "error" && (
+              <ErrorState message={errorMessage} onRetry={handleRetry} />
+            )}
+
+            {pageState === "success" && products.length === 0 && (
+              <EmptyState message="Your dashboard is empty.">
+                <p className="text-muted">
+                  Paste an Amazon link above to start tracking prices.
+                </p>
+              </EmptyState>
+            )}
+
+            {pageState === "success" && products.length > 0 && (
+              <div className="product-card-grid">
+                {products.map((product) => (
+                  <div
+                    key={product.id}
+                    className="product-card"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() =>
+                      product.id && navigate(`/product/${product.id}`)
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && product.id) {
+                        navigate(`/product/${product.id}`);
+                      }
+                    }}
+                  >
+                    {/* Top Row: Store + Stock */}
+                    <div className="card-top-row">
+                      <img
+                        src={product.store_imgurl}
+                        alt="store"
+                        className="store-logo"
+                      />
+
+                      <div className="stock-badge">
+                        <span className="dot" />
+                        {product.availability}
+                      </div>
+                    </div>
+
+                    {/* Image */}
+                    <div className="card-image-wrap">
+                      <img
+                        src={product.imgurl}
+                        alt={product.title}
+                        className="card-image"
+                      />
+                    </div>
+
+                    {/* Content */}
+                    <div className="card-body">
+                      <h3 className="card-title">{product.title}</h3>
+
+                      {/* Rating */}
+                      <div className="card-rating">
+                        <div className="stars">
+                          {"★".repeat(Math.floor(product.rating || 0))}
+                          {"☆".repeat(5 - Math.floor(product.rating || 0))}
+                        </div>
+                        <span className="rating-value">
+                          {product.rating.toLocaleString()}
+                        </span>
+                      </div>
+
+                      {/* Price */}
+                      <div className="card-price-row">
+                        <div>
+                          <span className="card-price">
+                            ₹{(product.price || 0).toLocaleString()}
+                          </span>
+
+                          {product.mrp && (
+                            <span className="card-mrp-label">
+                              MRP
+                              <span className="card-mrp">
+                                ₹{product.mrp.toLocaleString()}
+                              </span>
+                            </span>
+                          )}
+                        </div>
+
+                        {product.discount > 0 && (
+                          <div className="discount-badge">
+                            {product.discount}% off
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div
+                        className="card-actions"
+                        onClick={(e) => e.stopPropagation()} // Prevent navigation
+                      >
+                        <button className="action-btn">Show History</button>
+                        <button className="action-btn">Buy</button>
+                        
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+        </div>
+      </div>
     );
 };
 

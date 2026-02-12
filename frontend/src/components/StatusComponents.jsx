@@ -10,7 +10,7 @@ import React from 'react';
  */
 export const LoadingState = ({ message = "Loading..." }) => (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem', opacity: 0.7 }}>
-        {[1, 2, 3].map((i) => (
+        {[1, 2, 3,4,5,6,7,8].map((i) => (
             <div key={i} className="card" style={{ height: '300px', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <div className="skeleton" style={{ height: '160px', borderRadius: '8px' }}></div>
                 <div className="skeleton" style={{ height: '1.5rem', width: '80%' }}></div>

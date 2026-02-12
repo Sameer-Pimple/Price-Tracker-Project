@@ -92,8 +92,8 @@ const mockApi = {
      */
     getAllProducts: async () => {
         await delay(800);
-        // Return MOCK_PRODUCTS strictly
-        return MOCK_PRODUCTS;
+        const data =await fetch(API_BASE_URL + "api/products/All")
+        return data.json();
     },
     /**
      * Fetches curated deals.
