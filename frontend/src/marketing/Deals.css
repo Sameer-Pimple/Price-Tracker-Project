@@ -1,0 +1,165 @@
+/* Deals Page Layout */
+
+.deals-container {
+    padding-bottom: 2rem;
+}
+
+/* Container for sidebar and main content */
+.deals-layout {
+    display: flex;
+    gap: 2rem;
+    /* Removed max-width and margin auto since AppLayout handles it */
+    padding-bottom: 2rem;
+    align-items: flex-start;
+}
+
+/* Deals Heading alignment */
+.deals-header {
+    text-align: left;
+    max-width: 800px;
+    /* Left aligned */
+}
+
+.deals-header h1 {
+    margin-top: 2rem;
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #111827;
+}
+
+.deals-header p {
+    margin-bottom: 3rem;
+    color: #6b7280;
+    font-size: 1.125rem;
+}
+
+/* Sidebar */
+.deals-sidebar {
+    width: 250px;
+    flex-shrink: 0;
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+}
+
+.deals-sidebar h2 {
+    font-size: 1.1rem;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.deals-sidebar p {
+    padding: 0.5rem;
+    color: #4b5563;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.deals-sidebar p:hover {
+    background-color: #f3f4f6;
+    color: var(--primary-color);
+}
+
+/* Main Content Area */
+.deals-main {
+    flex-grow: 1;
+}
+
+.deals-main-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Make the heading span full width */
+.deals-main h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Deal Cards */
+.deal-card {
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    cursor: pointer;
+    background-color: var(--card-bg);
+    box-shadow: var(--card-shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.deal-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--primary-color);
+    box-shadow: var(--glow-teal);
+}
+
+.deal-card-title {
+    margin-top: 0;
+    font-size: 1.1rem;
+}
+
+.deal-meta {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.deal-price-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.deal-price {
+    color: var(--success-color);
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin: 0;
+}
+
+.deal-discount {
+    font-size: 0.875rem;
+    color: var(--danger-color);
+    background: var(--danger-bg);
+    padding: 2px 6px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.deal-note {
+    padding: 0 0 1rem 0;
+}
+
+.deal-note p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+/* Mobile essentials (<=480px) */
+@media (max-width: 480px) {
+    .deals-header h1 {
+        font-size: 2rem;
+    }
+
+    .deals-layout {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .deals-sidebar {
+        width: 100%;
+    }
+
+    .deals-main-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .deal-card {
+        padding: 1.25rem;
+    }
+}
