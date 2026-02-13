@@ -1,0 +1,36 @@
+src/pages/Product.jsx:                <button onClick={() => navigate('/')} className="btn-secondary">
+src/pages/Product.jsx:            <div className="product-hero card">
+src/pages/Product.jsx:                {liveData && <span className="badge badge-success" style={{ marginBottom: '1rem' }}>● Live Update</span>}
+src/pages/Product.jsx:                        <h1 className="text-title-lg" style={{ margin: 0 }}>{product.title}</h1>
+src/pages/Product.jsx:                                <span className={`badge ${buySignal === 'STRONG_BUY' || buySignal === 'BUY' ? 'badge-success' :
+src/pages/Product.jsx:                                    <span className="text-success text-meta">
+src/pages/Product.jsx:                        <div className="product-price-section">
+src/pages/Product.jsx:                            <div className="text-price-lg">
+src/pages/Product.jsx:                                <div className="text-meta" style={{ textDecoration: 'line-through' }}>
+src/pages/Product.jsx:                            <div className="text-helper" style={{ marginTop: '0.25rem' }}>
+src/pages/Product.jsx:                        <div className="text-meta">
+src/pages/Product.jsx:                        <div className="action-bar" style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+src/pages/Product.jsx:                                    className="btn-primary"
+src/pages/Product.jsx:                                className="btn-secondary"
+src/pages/Product.jsx:                                className="btn-secondary"
+src/pages/History.jsx:                    <div className="card" style={{ backgroundColor: '#f8fafc', textAlign: 'center' }}>
+src/pages/History.jsx:                        <span className="text-muted" style={{ display: 'block', fontSize: '0.875rem' }}>Current Price</span>
+src/pages/History.jsx:                    <div className="card" style={{ backgroundColor: '#f0fdf4', border: '1px solid #dcfce7', textAlign: 'center' }}>
+src/pages/History.jsx:                        <span className="text-success" style={{ display: 'block', fontSize: '0.875rem' }}>Lowest Seen</span>
+src/pages/History.jsx:                        <span className="text-success" style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>{formatCurrency(stats.min)}</span>
+src/pages/History.jsx:                    <div className="card" style={{ backgroundColor: '#fef2f2', border: '1px solid #fee2e2', textAlign: 'center' }}>
+src/pages/History.jsx:                        <span className="text-danger" style={{ display: 'block', fontSize: '0.875rem' }}>Highest Seen</span>
+src/pages/History.jsx:                        <span className="text-danger" style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>{formatCurrency(stats.max)}</span>
+src/pages/History.jsx:                    <div className="card" style={{ backgroundColor: '#fff7ed', border: '1px solid #ffedd5', textAlign: 'center' }}>
+src/pages/History.jsx:                        <span className={`text-${stats.direction === 'down' ? 'success' : stats.direction === 'up' ? 'danger' : 'primary'}`} style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>
+src/pages/Home.jsx:                    <div className="input-group-unified">
+src/pages/Home.jsx:                            className="input-unified"
+src/pages/Home.jsx:                            className="btn-unified"
+src/pages/Home.jsx:                    {products.length > 0 && <span className="badge badge-neutral">{products.length} Products</span>}
+src/pages/Home.jsx:                            <p className="text-muted">Paste an Amazon link above to start tracking prices.</p>
+src/pages/Home.jsx:                                    className="card card-hover"
+src/pages/Home.jsx:                                    <div className={`badge ${product.status === 'TRACKING' ? 'badge-success' : 'badge-danger'}`}
+src/pages/Home.jsx:                                    <h4 className="text-title-md" style={{ margin: '0 0 0.5rem 0', height: '2.8em', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+src/pages/Home.jsx:                                        <span className="text-price-md" style={{ color: 'var(--heading-color)' }}>
+src/pages/Home.jsx:                                            <span className="text-success text-small" style={{ fontWeight: '600', fontSize: '0.875rem' }}>
+src/pages/Home.jsx:                                        <p className="text-meta" style={{ margin: 0, fontSize: '0.75rem' }}>
