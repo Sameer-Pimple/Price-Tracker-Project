@@ -87,7 +87,7 @@ public class PriceTrackingService {
             return new TrackResultDTO(
                     true,
                     "Product already exists, tracking updated",
-                    product.getId()
+                    product.getPid()
             );
         }
 
@@ -131,7 +131,7 @@ public class PriceTrackingService {
         return new TrackResultDTO(
                 true,
                 "Product tracked successfully",
-                product.getId()
+                product.getPid()
         );
     }
 

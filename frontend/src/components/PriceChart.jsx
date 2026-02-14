@@ -11,6 +11,8 @@ import {
 import { Line } from "react-chartjs-2";
 import React, { useState, useMemo } from "react";
 import "chartjs-adapter-date-fns";
+import zoomPlugin from "chartjs-plugin-zoom";
+
 
 ChartJS.register(
   TimeScale,
@@ -19,7 +21,8 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  zoomPlugin
 );
 
 const customTooltip = (context) => {
@@ -135,6 +138,15 @@ const PriceChart = ({ priceHistory }) => {
     ],
   };
 
+  const chartDataPoints = filteredData.map((item) => ({
+    x: new Date(item.time),
+    y: item.min_price,
+  }));
+
+  const minDate = Math.min(...chartDataPoints.map((d) => d.x.getTime()));
+  const maxDate = Math.max(...chartDataPoints.map((d) => d.x.getTime()));
+
+
   const options = {
     responsive: true,
     interaction: {
@@ -153,17 +165,39 @@ const PriceChart = ({ priceHistory }) => {
         enabled: false, // disable default
         external: customTooltip,
       },
+      zoom: {
+        pan: {
+          enabled: true,
+          mode: "x",
+        },
+        zoom: {
+          wheel: {
+            enabled: true,
+            speed: 0.1,
+          },
+          pinch: {
+            enabled: true,
+          },
+          mode: "x",
+        },
+        limits: {
+          x: {
+            min: minDate,
+            max: maxDate,
+            minRange: 3 * 24 * 60 * 60 * 1000,
+          },
+        },
+      },
     },
     scales: {
       x: {
         type: "time",
+        min: minDate,
+        max: maxDate,
         grid: { display: false },
       },
-      y: {
-        beginAtZero: false,
-      },
     },
-    };
+  };
     
     
 

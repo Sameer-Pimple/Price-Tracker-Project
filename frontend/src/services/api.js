@@ -1,212 +1,74 @@
-/**
- * API Service Layer
- * 
- * RESPONSIBILITY:
- * This file is the ONLY place where backend API calls should be made.
- * It converts backend contract responses to frontend-safe objects.
- */
 
-// import { MOCK_PRODUCTS, MOCK_PRODUCT_DETAILS, delay } from '../mocks/intelligence'; 
-// Note: We need to make sure the path is correct. 
-// The file is at src/mocks/intelligence.js and this is src/services/api.js.
-// So import should be '../mocks/intelligence'
 
-import { MOCK_PRODUCTS, MOCK_PRODUCT_DETAILS, MOCK_TRENDS, MOCK_ALERTS, delay } from '../mocks/intelligence';
 
 // Configuration
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/';
-const USE_MOCKS = (process.env.REACT_APP_USE_MOCKS || 'true') === 'true';
+const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:8080/";
 
 /**
  * Centralized HTTP request handler
  * Handles headers, JSON parsing, and basic error normalization
  */
 const request = async (endpoint, options = {}) => {
-    const base = API_BASE_URL.replace(/\/$/, '');
-    const path = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-    const url = `${base}${path}`;
+  const base = API_BASE_URL.replace(/\/$/, "");
+  const path = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+  const url = `${base}${path}`;
 
-    const defaultHeaders = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-    };
+  const defaultHeaders = {
+    Accept: "application/json",
+  };
 
-    const config = {
-        ...options,
-        headers: {
-            ...defaultHeaders,
-            ...options.headers,
-        },
-    };
+  if (options.body) {
+    defaultHeaders["Content-Type"] = "application/json";
+  }
 
+  const config = {
+    ...options,
+    headers: {
+      ...defaultHeaders,
+      ...options.headers,
+    },
+  };
+
+  try {
+    const response = await fetch(url, config);
+
+    if (response.status === 204) {
+      return null;
+    }
+
+    const contentType = response.headers.get("content-type") || "";
+    const isJson = contentType.includes("application/json");
+
+    let data;
     try {
-        const response = await fetch(url, config);
-
-        if (response.status === 204) {
-            return null;
-        }
-
-        const isJson = response.headers.get('content-type')?.includes('application/json');
-        const data = isJson ? await response.json() : await response.text();
-
-        if (!response.ok) {
-            const apiError = new Error(data.message || `API Error: ${response.statusText}`);
-            apiError.status = response.status;
-            apiError.originalError = data;
-            throw apiError;
-        }
-
-        return data;
-    } catch (error) {
-        if (error instanceof TypeError) {
-            const netError = new Error('Unable to connect to server. Please check your internet connection or server status.');
-            netError.status = 0;
-            netError.originalError = error;
-            throw netError;
-        }
-        throw error;
+      data = isJson ? await response.json() : await response.text();
+    } catch {
+      data = null;
     }
+
+    if (!response.ok) {
+      const apiError = new Error(
+        data?.message || `API Error: ${response.statusText}`
+      );
+      apiError.status = response.status;
+      apiError.originalError = data;
+      throw apiError;
+    }
+
+    return data;
+  } catch (error) {
+    if (error instanceof TypeError) {
+      const netError = new Error(
+        "Unable to connect to server. Please check your internet connection or server status."
+      );
+      netError.status = 0;
+      netError.originalError = error;
+      throw netError;
+    }
+    throw error;
+  }
 };
 
-const mockApi = {
-    /**
-     * Tracks a new product by URL.
-     * MOCK BEHAVIOR: Returns a success mock after delay.
-     */
-    trackProduct: async (url) => {
-        await delay(1000);
-
-        // Return a mock response mimicking the successful tracking of a product
-        // We will just return the first mock product id for now
-        return {
-            id: "prod_1",
-            status: 'active',
-            message: "Product tracked successfully (MOCK)",
-            originalResponse: {}
-        };
-    },
-
-    /**
-     * Fetches all products.
-     * MOCK BEHAVIOR: Returns static list of products.
-     */
-    getAllProducts: async () => {
-        await delay(800);
-        const data =await fetch(API_BASE_URL + "api/products/All")
-        return data.json();
-    },
-    /**
-     * Fetches curated deals.
-     * MOCK BEHAVIOR: Filters products with a discount.
-     */
-    getDeals: async () => {
-        await delay(700);
-        return MOCK_PRODUCTS.filter(product => (product.price?.discount || 0) > 0).map(product => ({
-            ...product,
-            reason: product.price?.discount
-                ? `${product.price.discount}% under recent average`
-                : "Limited-time deal",
-        }));
-    },
-
-    /**
-     * Fetches product details by ID.
-     * MOCK BEHAVIOR: Returns detail view from MOCK_PRODUCT_DETAILS.
-     */
-    getProductById: async (id) => {
-        await delay(600);
-        const product = MOCK_PRODUCT_DETAILS[id];
-
-        if (!product) {
-            throw new Error(`Product with ID ${id} not found (MOCK)`);
-        }
-        return product;
-    },
-
-    /**
-     * Fetches price history for a product.
-     * MOCK BEHAVIOR: Returns history array from MOCK_PRODUCT_DETAILS.
-     */
-    getPriceHistory: async (id) => {
-        await delay(500);
-        const product = MOCK_PRODUCT_DETAILS[id];
-        return product ? product.history : [];
-    },
-    /**
-     * Fetches trends data.
-     * MOCK BEHAVIOR: Returns aggregate trend snapshot.
-     */
-    getTrends: async () => {
-        await delay(700);
-        return MOCK_TRENDS;
-    },
-    /**
-     * Fetches alerts.
-     * MOCK BEHAVIOR: Returns static alerts.
-     */
-    getAlerts: async () => {
-        await delay(700);
-        return MOCK_ALERTS;
-    },
-    /**
-     * Creates a new alert.
-     * MOCK BEHAVIOR: Adds a new item to the mock list.
-     */
-    createAlert: async (payload) => {
-        await delay(600);
-        const newAlert = {
-            id: `alert_${Date.now()}`,
-            productTitle: payload.productTitle || payload.title || "Untitled Product",
-            targetPrice: Number(payload.targetPrice) || 0,
-            currentPrice: Number(payload.currentPrice) || 0,
-            currency: payload.currency || "INR",
-            status: "ACTIVE",
-            lastTriggered: null
-        };
-        MOCK_ALERTS.unshift(newAlert);
-        return newAlert;
-    },
-    /**
-     * Updates an alert.
-     * MOCK BEHAVIOR: Patches local mock entry.
-     */
-    updateAlert: async (id, updates) => {
-        await delay(500);
-        const index = MOCK_ALERTS.findIndex(alert => alert.id === id);
-        if (index === -1) throw new Error("Alert not found");
-        MOCK_ALERTS[index] = { ...MOCK_ALERTS[index], ...updates };
-        return MOCK_ALERTS[index];
-    },
-    /**
-     * Deletes an alert.
-     * MOCK BEHAVIOR: Removes local mock entry.
-     */
-    deleteAlert: async (id) => {
-        await delay(400);
-        const index = MOCK_ALERTS.findIndex(alert => alert.id === id);
-        if (index === -1) throw new Error("Alert not found");
-        const [removed] = MOCK_ALERTS.splice(index, 1);
-        return removed;
-    },
-
-    /**
-     * Performs a live check of the product status.
-     * MOCK BEHAVIOR: Returns current price info from detail mock.
-     */
-    checkLiveStatus: async (url) => {
-        await delay(1500);
-        // Simulate a live check returning fresh data
-        // For simplicity, just return the data from prod_1
-        const mock = MOCK_PRODUCT_DETAILS["prod_1"];
-        return {
-            Price: mock.price.current,
-            MRP: mock.price.original,
-            Rating: 4.5,
-            availability: "In Stock",
-            discount: mock.price.discount + "%"
-        };
-    }
-};
 
 const realApi = {
   /**
@@ -416,8 +278,6 @@ const realApi = {
     return data;
   },
 };
-
-const api = USE_MOCKS ? mockApi : realApi;
 
 // export default api;
 export default realApi;

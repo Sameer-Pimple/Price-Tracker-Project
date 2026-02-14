@@ -12,6 +12,5 @@ import lombok.NoArgsConstructor;
 public class TrackResultDTO {
     private boolean success;
     private String message;
-    private Long productId;
+    private String productPid;
 }
-
