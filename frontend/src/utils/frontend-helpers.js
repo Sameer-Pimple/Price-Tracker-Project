@@ -38,9 +38,9 @@ export const calculateTrends = (history) => {
     if (!history || history.length < 2) return { direction: 'stable', min: null, max: null, current: null };
 
     // Sort by date ascending just in case
-    const sorted = [...history].sort((a, b) => new Date(a.date) - new Date(b.date));
+    const sorted = [...history].sort((a, b) => new Date(a.time) - new Date(b.time));
 
-    const prices = sorted.map(h => Number(h.price));
+    const prices = sorted.map(h => Number(h.min_price));
     const current = prices[prices.length - 1];
     const previous = prices[prices.length - 2];
     const min = Math.min(...prices);

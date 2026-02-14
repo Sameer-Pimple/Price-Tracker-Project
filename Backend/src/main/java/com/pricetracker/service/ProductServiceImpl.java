@@ -56,28 +56,64 @@ public class ProductServiceImpl implements ProductService{
         return repo.findAll();
     }
 
-    @Override
-    public ProductDetailsDTO getProductWithDetail(Long id){
+    // @Override
+    // public ProductDetailsDTO getProductWithDetail(Long id) {
 
-        Product p = repo.findById(id)
+    //     Product p = repo.findById(id)
+    //             .orElseThrow(() -> new RuntimeException("Product not found"));
+
+    //     ProductSnapshots s = snapshotRepo.findByProduct(p)
+    //             .orElseThrow(() -> new RuntimeException("Snapshot not found"));
+
+    //     ProductDetailsDTO dto = new ProductDetailsDTO();
+    //     dto.setPid(p.getPid());
+    //     dto.setTitle(p.getTitle());
+    //     dto.setMrp(s.getMRP());
+    //     dto.setPrice(s.getPrice());
+    //     dto.setDiscount(s.getDiscount());
+    //     dto.setAvailability(s.getAvailability());
+    //     dto.setRating(s.getRating());
+    //     dto.setImgurl(p.getImg_url());
+    //     dto.setStore_imgurl(s.getStore().getLogoUrl());
+
+    //     List<PriceHistory> historyList = historyRepo.findAllByProduct_IdOrderByDateAsc(p.getId());
+
+    //     List<GraphDataDTO> graphData = historyList.stream()
+    //             .map(h -> {
+    //                 GraphDataDTO g = new GraphDataDTO();
+    //                 g.setTime(h.getDate());
+    //                 g.setMin_price(h.getPrice());
+    //                 return g;
+    //             })
+    //             .toList();
+
+    //     dto.setGraph_data(graphData);
+
+    //     return dto;
+    // }
+    
+    @Override
+    public ProductDetailsDTO getProductWithDetail(String pid) {
+
+        Product p = repo.findByPid(pid)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
         ProductSnapshots s = snapshotRepo.findByProduct(p)
                 .orElseThrow(() -> new RuntimeException("Snapshot not found"));
 
         ProductDetailsDTO dto = new ProductDetailsDTO();
-                    dto.setPid(p.getPid());
-                    dto.setTitle(p.getTitle());
-                    dto.setMrp(s.getMRP());
-                    dto.setPrice(s.getPrice());
-                    dto.setDiscount(s.getDiscount());
-                    dto.setAvailability(s.getAvailability());
-                    dto.setRating(s.getRating());
-                    dto.setImgurl(p.getImg_url());
-                    dto.setStore_imgurl(s.getStore().getLogoUrl());
+        dto.setId(p.getId());
+        dto.setPid(p.getPid());
+        dto.setTitle(p.getTitle());
+        dto.setMrp(s.getMRP());
+        dto.setPrice(s.getPrice());
+        dto.setDiscount(s.getDiscount());
+        dto.setAvailability(s.getAvailability());
+        dto.setRating(s.getRating());
+        dto.setImgurl(p.getImg_url());
+        dto.setStore_imgurl(s.getStore().getLogoUrl());
 
-        List<PriceHistory> historyList =
-                historyRepo.findAllByProduct_IdOrderByDateAsc(p.getId());
+        List<PriceHistory> historyList = historyRepo.findAllByProduct_IdOrderByDateAsc(p.getId());
 
         List<GraphDataDTO> graphData = historyList.stream()
                 .map(h -> {
@@ -108,6 +144,7 @@ public class ProductServiceImpl implements ProductService{
 
 
                     ProductListDTO dto = new ProductListDTO();
+                    dto.setId(p.getId());
                     dto.setPid(p.getPid());
                     dto.setTitle(p.getTitle());
                     dto.setMrp(s.getMRP());
@@ -132,7 +169,8 @@ public class ProductServiceImpl implements ProductService{
                     ProductSnapshots s = snapshotRepo.findByProduct(p)
                             .orElseThrow(() -> new RuntimeException("Snapshot not found"));
 
-            ProductListDTO dto = new ProductListDTO();
+                    ProductListDTO dto = new ProductListDTO();
+            dto.setId(p.getId());
             dto.setPid(p.getPid());
             dto.setTitle(p.getTitle());
             dto.setMrp(s.getMRP());
@@ -155,6 +193,7 @@ public class ProductServiceImpl implements ProductService{
         return snapshots.stream()
                 .map(p -> {
                     ProductListDTO dto = new ProductListDTO();
+                    dto.setId(p.getId());
                     dto.setPid(p.getProduct().getPid());
                     dto.setTitle(p.getProduct().getTitle());
                     dto.setMrp(p.getMRP());

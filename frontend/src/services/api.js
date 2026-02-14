@@ -209,240 +209,215 @@ const mockApi = {
 };
 
 const realApi = {
-    /**
-     * Tracks a new product by URL.
-     *
-     * Contract: POST /api/track
-     */
-    trackProduct: async (url) => {
-        const data = await request('/api/track', {
-            method: 'POST',
-            body: JSON.stringify({ url }),
-        });
+  /**
+   * Tracks a new product by URL.
+   *
+   * Contract: POST /api/track
+   */
+  trackProduct: async (url) => {
+    const data = await request("/api/track", {
+      method: "POST",
+      body: JSON.stringify({ url }),
+    });
 
-        return {
-            id: data?.productId ? data.productId.toString() : null,
-            status: data?.success ? 'active' : 'error',
-            message: data?.message || '',
-            originalResponse: data,
-        };
-    },
+    return {
+      id: data?.productId ? data.productId.toString() : null,
+      status: data?.success ? "active" : "error",
+      message: data?.message || "",
+      originalResponse: data,
+    };
+  },
 
-    /**
-     * Fetches all products.
-     *
-     * Contract: GET /api/products
-     */
-    getAllProducts: async () => {
-        try {
-            const data = await request('/api/products');
+  /**
+   * Fetches all products.
+   *
+   * Contract: GET /api/products
+   */
+  getAllProducts: async () => {
+    return await request(`/api/products/All`);
+  },
+  /**
+   * Fetches curated deals.
+   *
+   * Contract: GET /api/deals
+   * Fallback: Filter products client-side if endpoint isn't ready.
+   */
+  getDeals: async () => {
+    try {
+      const data = await request("/api/deals");
 
-            if (!Array.isArray(data)) return [];
+      if (!Array.isArray(data)) return [];
 
-            return data.map(product => ({
-                id: product.id?.toString(),
-                title: product.title || 'Untitled Product',
-                pid: product.pid,
-                image: product.imageUrl || '',
-                url: product.url || '',
-                price: product.price || product.currentPrice || product.priceSnapshot || {},
-                lastChecked: product.updatedAt || product.lastChecked || null,
-                status: product.status || 'TRACKING',
-            }));
-        } catch (error) {
-            console.warn('Failed to fetch products', error);
-            return [];
-        }
-    },
-    /**
-     * Fetches curated deals.
-     *
-     * Contract: GET /api/deals
-     * Fallback: Filter products client-side if endpoint isn't ready.
-     */
-    getDeals: async () => {
-        try {
-            const data = await request('/api/deals');
+      return data.map((deal) => ({
+        id: deal.id?.toString(),
+        title: deal.title || "Untitled Deal",
+        pid: deal.pid,
+        image: deal.imageUrl || deal.image || "",
+        url: deal.url || "",
+        price: deal.price || deal.currentPrice || {},
+        lastChecked: deal.updatedAt || deal.lastChecked || null,
+        status: deal.status || "TRACKING",
+        reason: deal.reason || deal.badge || "",
+      }));
+    } catch (error) {
+      if (error?.status === 404) {
+        const products = await realApi.getAllProducts();
+        return products.filter((product) => (product.price?.discount || 0) > 0);
+      }
+      console.warn("Failed to fetch deals", error);
+      return [];
+    }
+  },
 
-            if (!Array.isArray(data)) return [];
+  /**
+   * Fetches product details by ID.
+   *
+   * Contract: GET /api/products/:id
+   */
+  getProductById: async (pid) => {
+    return await request(`/api/products/Details/${pid}`);
+  },
 
-            return data.map(deal => ({
-                id: deal.id?.toString(),
-                title: deal.title || 'Untitled Deal',
-                pid: deal.pid,
-                image: deal.imageUrl || deal.image || '',
-                url: deal.url || '',
-                price: deal.price || deal.currentPrice || {},
-                lastChecked: deal.updatedAt || deal.lastChecked || null,
-                status: deal.status || 'TRACKING',
-                reason: deal.reason || deal.badge || '',
-            }));
-        } catch (error) {
-            if (error?.status === 404) {
-                const products = await realApi.getAllProducts();
-                return products.filter(product => (product.price?.discount || 0) > 0);
-            }
-            console.warn('Failed to fetch deals', error);
-            return [];
-        }
-    },
+  /**
+   * Fetches price history for a product.
+   *
+   * Contract: GET /api/products/:id/history
+   */
+  getPriceHistory: async (id) => {
+    try {
+      const data = await request(`/api/products/${id}/history`);
 
-    /**
-     * Fetches product details by ID.
-     *
-     * Contract: GET /api/products/:id
-     */
-    getProductById: async (id) => {
-        const data = await request(`/api/products/${id}`);
+      if (!Array.isArray(data)) return [];
 
-        return {
-            id: data.id?.toString(),
-            title: data.title || 'Unknown Product',
-            pid: data.pid,
-            image: data.imageUrl || '',
-            url: data.url || '',
-            price: data.price || data.currentPrice || {},
-            lastChecked: data.updatedAt || new Date().toISOString(),
-            intelligence: data.intelligence || null,
-            analytics: data.analytics || null,
-        };
-    },
+      return data.map((item) => ({
+        date: item.recordedAt,
+        price: item.price,
+        currency: item.currency,
+      }));
+    } catch (error) {
+      console.warn("Failed to fetch history", error);
+      return [];
+    }
+  },
+  /**
+   * Fetches trends data.
+   *
+   * Contract: GET /api/trends
+   */
+  getTrends: async () => {
+    try {
+      const data = await request("/api/trends");
 
-    /**
-     * Fetches price history for a product.
-     *
-     * Contract: GET /api/products/:id/history
-     */
-    getPriceHistory: async (id) => {
-        try {
-            const data = await request(`/api/products/${id}/history`);
+      return {
+        summary: data.summary || null,
+        categories: Array.isArray(data.categories) ? data.categories : [],
+        movers: Array.isArray(data.movers) ? data.movers : [],
+        timeline: Array.isArray(data.timeline) ? data.timeline : [],
+      };
+    } catch (error) {
+      console.warn("Failed to fetch trends", error);
+      return {
+        summary: null,
+        categories: [],
+        movers: [],
+        timeline: [],
+      };
+    }
+  },
+  /**
+   * Fetches alerts.
+   *
+   * Contract: GET /api/alerts
+   */
+  getAlerts: async () => {
+    try {
+      const data = await request("/api/alerts");
+      if (!Array.isArray(data)) return [];
+      return data.map((alert) => ({
+        id: alert.id?.toString(),
+        productTitle: alert.productTitle || alert.title || "Untitled Product",
+        targetPrice: alert.targetPrice || alert.target || 0,
+        currentPrice: alert.currentPrice || 0,
+        currency: alert.currency || "INR",
+        status: alert.status || "ACTIVE",
+        lastTriggered: alert.lastTriggered || null,
+      }));
+    } catch (error) {
+      console.warn("Failed to fetch alerts", error);
+      return [];
+    }
+  },
+  /**
+   * Creates a new alert.
+   *
+   * Contract: POST /api/alerts
+   */
+  createAlert: async (payload) => {
+    const data = await request("/api/alerts", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+    return {
+      id: data?.id?.toString(),
+      productTitle:
+        data?.productTitle ||
+        data?.title ||
+        payload.productTitle ||
+        payload.title,
+      targetPrice: data?.targetPrice || payload.targetPrice || 0,
+      currentPrice: data?.currentPrice || 0,
+      currency: data?.currency || payload.currency || "INR",
+      status: data?.status || "ACTIVE",
+      lastTriggered: data?.lastTriggered || null,
+    };
+  },
+  /**
+   * Updates an alert.
+   *
+   * Contract: PATCH /api/alerts/:id
+   */
+  updateAlert: async (id, updates) => {
+    const data = await request(`/api/alerts/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(updates),
+    });
+    return {
+      id: data?.id?.toString() || id,
+      productTitle: data?.productTitle || data?.title || updates.productTitle,
+      targetPrice: data?.targetPrice || updates.targetPrice || 0,
+      currentPrice: data?.currentPrice || updates.currentPrice || 0,
+      currency: data?.currency || updates.currency || "INR",
+      status: data?.status || updates.status || "ACTIVE",
+      lastTriggered: data?.lastTriggered || updates.lastTriggered || null,
+    };
+  },
+  /**
+   * Deletes an alert.
+   *
+   * Contract: DELETE /api/alerts/:id
+   */
+  deleteAlert: async (id) => {
+    await request(`/api/alerts/${id}`, {
+      method: "DELETE",
+    });
+    return { id };
+  },
 
-            if (!Array.isArray(data)) return [];
-
-            return data.map(item => ({
-                date: item.recordedAt,
-                price: item.price,
-                currency: item.currency,
-            }));
-        } catch (error) {
-            console.warn('Failed to fetch history', error);
-            return [];
-        }
-    },
-    /**
-     * Fetches trends data.
-     *
-     * Contract: GET /api/trends
-     */
-    getTrends: async () => {
-        try {
-            const data = await request('/api/trends');
-
-            return {
-                summary: data.summary || null,
-                categories: Array.isArray(data.categories) ? data.categories : [],
-                movers: Array.isArray(data.movers) ? data.movers : [],
-                timeline: Array.isArray(data.timeline) ? data.timeline : []
-            };
-        } catch (error) {
-            console.warn('Failed to fetch trends', error);
-            return {
-                summary: null,
-                categories: [],
-                movers: [],
-                timeline: []
-            };
-        }
-    },
-    /**
-     * Fetches alerts.
-     *
-     * Contract: GET /api/alerts
-     */
-    getAlerts: async () => {
-        try {
-            const data = await request('/api/alerts');
-            if (!Array.isArray(data)) return [];
-            return data.map(alert => ({
-                id: alert.id?.toString(),
-                productTitle: alert.productTitle || alert.title || 'Untitled Product',
-                targetPrice: alert.targetPrice || alert.target || 0,
-                currentPrice: alert.currentPrice || 0,
-                currency: alert.currency || 'INR',
-                status: alert.status || 'ACTIVE',
-                lastTriggered: alert.lastTriggered || null
-            }));
-        } catch (error) {
-            console.warn('Failed to fetch alerts', error);
-            return [];
-        }
-    },
-    /**
-     * Creates a new alert.
-     *
-     * Contract: POST /api/alerts
-     */
-    createAlert: async (payload) => {
-        const data = await request('/api/alerts', {
-            method: 'POST',
-            body: JSON.stringify(payload),
-        });
-        return {
-            id: data?.id?.toString(),
-            productTitle: data?.productTitle || data?.title || payload.productTitle || payload.title,
-            targetPrice: data?.targetPrice || payload.targetPrice || 0,
-            currentPrice: data?.currentPrice || 0,
-            currency: data?.currency || payload.currency || 'INR',
-            status: data?.status || 'ACTIVE',
-            lastTriggered: data?.lastTriggered || null
-        };
-    },
-    /**
-     * Updates an alert.
-     *
-     * Contract: PATCH /api/alerts/:id
-     */
-    updateAlert: async (id, updates) => {
-        const data = await request(`/api/alerts/${id}`, {
-            method: 'PATCH',
-            body: JSON.stringify(updates),
-        });
-        return {
-            id: data?.id?.toString() || id,
-            productTitle: data?.productTitle || data?.title || updates.productTitle,
-            targetPrice: data?.targetPrice || updates.targetPrice || 0,
-            currentPrice: data?.currentPrice || updates.currentPrice || 0,
-            currency: data?.currency || updates.currency || 'INR',
-            status: data?.status || updates.status || 'ACTIVE',
-            lastTriggered: data?.lastTriggered || updates.lastTriggered || null
-        };
-    },
-    /**
-     * Deletes an alert.
-     *
-     * Contract: DELETE /api/alerts/:id
-     */
-    deleteAlert: async (id) => {
-        await request(`/api/alerts/${id}`, {
-            method: 'DELETE',
-        });
-        return { id };
-    },
-
-    /**
-     * Performs a live check of the product status.
-     *
-     * Contract: POST /api/scrape/amazon
-     */
-    checkLiveStatus: async (url) => {
-        const data = await request('/api/scrape/amazon', {
-            method: 'POST',
-            body: JSON.stringify({ url }),
-        });
-        return data;
-    },
+  /**
+   * Performs a live check of the product status.
+   *
+   * Contract: POST /api/scrape/amazon
+   */
+  checkLiveStatus: async (url) => {
+    const data = await request("/api/scrape/amazon", {
+      method: "POST",
+      body: JSON.stringify({ url }),
+    });
+    return data;
+  },
 };
 
 const api = USE_MOCKS ? mockApi : realApi;
 
-export default api;
+// export default api;
+export default realApi;

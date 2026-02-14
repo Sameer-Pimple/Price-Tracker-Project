@@ -40,10 +40,16 @@ public class ProductController {
         return productService.getProductById(id).orElseThrow(() -> new RuntimeException("Product not found"));
     }
 
-    @GetMapping("Details/{id}")
-    public ProductDetailsDTO getDetailsByID(@PathVariable Long id){
-        return productService.getProductWithDetail(id);
+    // @GetMapping("Details/{id}")
+    // public ProductDetailsDTO getDetailsByID(@PathVariable Long id) {
+    //     return productService.getProductWithDetail(id);
+    // }
+    
+    @GetMapping("Details/{pid}")
+    public ProductDetailsDTO getDetailsByPID(@PathVariable String pid) {
+        return productService.getProductWithDetail(pid);
     }
+
 
 
 

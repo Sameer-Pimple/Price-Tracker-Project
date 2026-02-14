@@ -11,6 +11,7 @@ import lombok.Setter;
 public class ProductListDTO {
 
     private String pid;
+    private Long id;
     private Integer price;
     private Integer mrp;
     private Float rating;

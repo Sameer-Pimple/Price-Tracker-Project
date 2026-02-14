@@ -13,6 +13,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ProductDetailsDTO {
     private String pid;
+    private Long id;
     private Integer price;
     private Integer mrp;
     private Float rating;

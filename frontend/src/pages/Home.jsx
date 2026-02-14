@@ -34,7 +34,8 @@ const Home = () => {
 
     const handleUrlSubmit = async (e) => {
         const url = e.target.elements['url-input'].value;
-
+        console.log(url);
+        
         // Basic validation matching UrlForm
         if (!url.includes('amazon.in')) return;
         if (!url.includes('/dp/') && !url.includes('/gp/')) return;
@@ -166,11 +167,11 @@ const Home = () => {
                     role="button"
                     tabIndex={0}
                     onClick={() =>
-                      product.id && navigate(`/product/${product.id}`)
+                      product.id && navigate(`/products/${product.pid}`)
                     }
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && product.id) {
-                        navigate(`/product/${product.id}`);
+                        navigate(`/product/${product.pid}`);
                       }
                     }}
                   >

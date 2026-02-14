@@ -18,7 +18,9 @@ public interface ProductService{
 
     List<Product> getAllProduct();
 
-    ProductDetailsDTO getProductWithDetail(Long id);
+    // ProductDetailsDTO getProductWithDetail(Long id);
+
+    ProductDetailsDTO getProductWithDetail(String pid);
 
     List<ProductListDTO> getAllProductWithInfo();
 
