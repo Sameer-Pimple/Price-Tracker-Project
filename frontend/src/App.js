@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Product from "./pages/Product";
 import History from "./pages/History";
+import Login from "./pages/Login";
+import SignIn from "./pages/signin";
 import Deals from "./marketing/Deals";
 import Trends from "./marketing/Trends";
 import Alerts from "./marketing/Alerts";
@@ -19,6 +21,8 @@ function App() {
           <Route path="/Home" element={<Home />} />
           <Route path="/deals" element={<Deals />} />
           <Route path="/trends" element={<Trends />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signin" element={<SignIn />} />
           <Route path="/alerts" element={<Alerts />} />
         </Routes>
       </AppLayout>

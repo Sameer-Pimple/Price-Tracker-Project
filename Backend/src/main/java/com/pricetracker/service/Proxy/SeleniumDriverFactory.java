@@ -21,7 +21,7 @@ public class SeleniumDriverFactory {
 
     public WebDriver createDriver() {
         ChromeOptions options = new ChromeOptions();
-//        options.addArguments("--headless");
+    //    options.addArguments("--headless");
         options.addArguments("--disable-gpu");
         options.addArguments("--no-sandbox");
         options.addArguments("--window-size=1920,1080");

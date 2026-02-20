@@ -517,6 +517,7 @@ section {
   font-size: 1.25rem;
   cursor: pointer;
   color: var(--text-muted);
+  margin-left: 5px;
 }
 
 .theme-toggle:hover {

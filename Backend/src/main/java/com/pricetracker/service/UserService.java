@@ -2,6 +2,8 @@ package com.pricetracker.service;
 
 import com.pricetracker.DTO.UserCreateRequest;
 import com.pricetracker.entity.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Optional;
 

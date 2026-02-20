@@ -186,6 +186,35 @@ const realApi = {
       };
     }
   },
+
+  /*
+   *Register User
+   *
+   * Contract: Post /api/user/SignUp
+   */
+  registerUser: async (payload) => {
+    const data = await request(`/api/user/signin`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+
+    return data; // expecting token or user info
+  },
+
+  /*
+   *Login User
+   *
+   * Contract: Post /api/user/login
+   */
+  loginUser: async (payload) => {
+    const data = await request(`/api/user/login`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+
+    return data; // expecting token or user info
+  },
+
   /**
    * Fetches alerts.
    *
