@@ -10,8 +10,11 @@ import com.pricetracker.entity.ProductSnapshots;
 import com.pricetracker.repository.PriceHistoryRepo;
 import com.pricetracker.repository.ProductRepo;
 import com.pricetracker.repository.ProductSnapshotsRepo;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -205,5 +208,14 @@ public class ProductServiceImpl implements ProductService{
                     dto.setStore_imgurl(p.getStore().getLogoUrl());
                     return dto;
                 }).toList();
+    }
+
+    @Override
+    public List<Product> getProductForDailyUpdate(){
+        LocalDateTime time = LocalDateTime.now().minusHours(4);
+        Pageable limit = PageRequest.of(0, 20);
+
+        return repo.findOldProductsWithActiveAlerts(time,limit);
+
     }
 }

@@ -49,10 +49,5 @@ public class ProductController {
     public ProductDetailsDTO getDetailsByPID(@PathVariable String pid) {
         return productService.getProductWithDetail(pid);
     }
-
-
-
-
-
 }
 

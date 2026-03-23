@@ -27,4 +27,6 @@ public interface ProductService{
     List<ProductListDTO> getAllProductByCategory(String category);
 
     List<ProductListDTO> getAllProductByDiscount(Integer discount);
+
+    List<Product> getProductForDailyUpdate();
 }
