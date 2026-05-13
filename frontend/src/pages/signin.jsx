@@ -4,9 +4,11 @@ import { FaEnvelope, FaPhoneAlt, FaUser, FaKey } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import api from "../services/api";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Signin = () => {
     const navigate = useNavigate();
+    const { login } = useAuth();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -68,7 +70,6 @@ const Signin = () => {
    }
 
    setErrors({});
-
    try {
      const data = await api.registerUser({
        name: formData.username, // match DTO
@@ -83,8 +84,12 @@ const Signin = () => {
      if (data.token) {
        localStorage.setItem("token", data.token);
      }
+    login(data.token);
 
-     navigate(`/`)
+     navigate(`/`,{
+         state:{
+             message: "Registration Successful"}
+             });
    } catch (error) {
      console.error("Register Error:", error);
      setErrors({ api: "Registration failed. Try again." });

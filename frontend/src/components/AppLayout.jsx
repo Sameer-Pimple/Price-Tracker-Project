@@ -1,8 +1,20 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import './AppLayout.css';
+import Button from '@mui/material/Button';
+import { useAuth } from "../context/AuthContext";
 
 const AppLayout = ({ children }) => {
+
+    const navigate = useNavigate();
+    const { isLoggedIn } = useAuth();
+    const handleLogout = () => {
+
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+
+          window.location.href = "/";
+       };
     return (
       <div className="app-shell">
         <header className="app-header">
@@ -26,8 +38,26 @@ const AppLayout = ({ children }) => {
             </div>
 
             <div className="logintab">
-              <a href="/login">LogIn / </a>
-              <a href="/signin">SignUp</a>
+              {
+                 isLoggedIn ? (
+
+                    <Button size="small" variant="text" onClick={handleLogout}>
+                       Logout
+                    </Button>
+
+                 ) : (
+
+                    <>
+                       <Button  size="small" variant="text" onClick={() => navigate("/login")}>
+                          Login
+                       </Button>
+
+                       <Button   size="small" variant="text" onClick={() => navigate("/signin")}>
+                          Sign In
+                       </Button>
+                    </>
+                 )
+              }
               <button
                 className="theme-toggle"
                 onClick={() => {
@@ -44,7 +74,6 @@ const AppLayout = ({ children }) => {
             </div>
           </div>
         </header>
-
         <main className="app-main">{children}</main>
       </div>
     );

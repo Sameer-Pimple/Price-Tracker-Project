@@ -98,7 +98,7 @@ const customTooltip = (context) => {
 
 const PriceChart = ({ priceHistory }) => {
 
-  const [timeFrame, setTimeFrame] = useState("45D");
+  const [timeFrame, setTimeFrame] = useState("6M");
 
   const filteredData = useMemo(() => {
     const now = new Date();

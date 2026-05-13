@@ -4,9 +4,15 @@ import { FaUser, FaKey } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import api from "../services/api";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import Alert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
+
 
 const Login = () => {
     const navigate = useNavigate();
+    const [showAlert, setShowAlert] = useState(false);
+    const { login } = useAuth();
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -55,15 +61,24 @@ const handleSubmit = async (e) => {
     });
 
     console.log("Login Success:", data);
-
     if (data.token) {
       localStorage.setItem("token", data.token);
       }
-      
-      navigate(`/`)
+      login(data.token);
+
+      navigate("/", {
+         state: {
+            message: "Login Successful"
+         }
+      });
   } catch (error) {
     console.error("Login Error:", error);
     setErrors({ api: "Invalid username or password" });
+                  setShowAlert(true);
+
+                  setTimeout(() => {
+                     setShowAlert(false);
+                  }, 3000);
   }
 };
 
@@ -71,6 +86,15 @@ const handleSubmit = async (e) => {
 
   return (
     <div className="login-container">
+        <Snackbar
+                open={showAlert}
+                autoHideDuration={3000}
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+             >
+                <Alert severity="error">
+                   {"Invalid username or password"}
+                </Alert>
+             </Snackbar>
       <div className="login-card">
         <img src="/logo.ico" alt="Logo" className="icon-box" />
 

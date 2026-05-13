@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate , useLocation} from "react-router-dom";
 import api from "../services/api";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 import {
   LoadingState,
   ErrorState,
@@ -9,6 +11,9 @@ import {
 import "./Home.css";
 
 const Home = () => {
+    const location = useLocation();
+    const [showAlert, setShowAlert] = useState(false);
+    const [message, setMessage] = useState("");
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [pageState, setPageState] = useState("loading"); // loading, success, error
@@ -17,6 +22,19 @@ const Home = () => {
 
   useEffect(() => {
     const fetchProducts = async () => {
+        if(location.state?.message){
+
+              setMessage(location.state.message);
+              setShowAlert(true);
+
+              setTimeout(() => {
+                 setShowAlert(false);
+              }, 3000);
+          navigate(location.pathname, {
+                   replace: true,
+                   state: {}
+                });
+           }
       try {
         const data = await api.getAllProducts();
         // Client-side sort if needed, though backend does it.
@@ -33,7 +51,7 @@ const Home = () => {
     };
 
     fetchProducts();
-  }, []);
+  }, [location]);
 
   const handleUrlSubmit = async (e) => {
     const url = e.target.elements["url-input"].value;
@@ -85,7 +103,15 @@ const Home = () => {
 
   return (
     <div style={{ paddingBottom: "4rem" }}>
-      {/* Dashboard Input Section - Top of Flow */}
+     <Snackbar
+        open={showAlert}
+        autoHideDuration={3000}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+     >
+        <Alert severity="success">
+           {message}
+        </Alert>
+     </Snackbar>
       <div className="dashboard-header">
         <form onSubmit={handleUrlSubmit} className="track-input-form">
           <div className="input-group-unified">
