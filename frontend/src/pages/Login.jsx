@@ -31,7 +31,7 @@ const Login = () => {
     let newErrors = {};
 
     if (!formData.username.trim()) {
-      newErrors.username = "Username is required";
+      newErrors.username = "Email is required";
     }
 
     if (!formData.password) {
@@ -105,9 +105,9 @@ const handleSubmit = async (e) => {
           <div className={`input-box ${errors.username ? "error-border" : ""}`}>
             <FaUser className="input-icon" />
             <input
-              type="text"
+              type="Email"
               name="username"
-              placeholder="Username"
+              placeholder="Email"
               value={formData.username}
               onChange={handleChange}
             />

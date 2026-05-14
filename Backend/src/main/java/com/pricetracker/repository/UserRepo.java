@@ -4,8 +4,11 @@ import com.pricetracker.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface UserRepo extends JpaRepository<User, Long> {
-     User findByEmail(String Email);
-     User findByUsername(String Username);
+     Optional<User> findByEmail(String Email);
+     Optional<User> findByUsername(String Username);
+     boolean existsByEmail(String email);
 }

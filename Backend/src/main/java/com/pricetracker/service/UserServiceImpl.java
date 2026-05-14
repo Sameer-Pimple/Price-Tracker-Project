@@ -21,6 +21,11 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public void createUser(UserCreateRequest userReq) {
+        if (userRepo.existsByEmail(userReq.getEmail())){
+            throw new RuntimeException(
+                    "Email already registered");
+        }
+
         User user = new User();
         user.setUsername(userReq.getName());
         user.setEmail(userReq.getEmail());
@@ -40,7 +45,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User getUserByEmail(String Email) {
+    public Optional<User> getUserByEmail(String Email) {
         return userRepo.findByEmail(Email);
     }
 }

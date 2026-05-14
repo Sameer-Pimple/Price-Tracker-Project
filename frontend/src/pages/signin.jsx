@@ -92,7 +92,7 @@ const Signin = () => {
              });
    } catch (error) {
      console.error("Register Error:", error);
-     setErrors({ api: "Registration failed. Try again." });
+     setErrors({ api: "Email Already Exists." });
    }
  };
 

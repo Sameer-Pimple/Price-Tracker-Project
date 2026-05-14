@@ -37,7 +37,7 @@ public class UserController {
     @PostMapping("/signin")
     public ResponseEntity<Map<String,String>> signup(@RequestBody UserCreateRequest userReq) {
         userService.createUser(userReq);
-        String jwt = jwtUtil.generateToken(userReq.getName());
+        String jwt = jwtUtil.generateToken(userReq.getEmail());
 
         Map<String, String> response = new HashMap<>();
         response.put("token", jwt);

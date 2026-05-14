@@ -1,5 +1,8 @@
 package com.pricetracker.util;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -12,7 +15,8 @@ import java.util.Map;
 @Component
 public class JwtUtil {
 
-    private String SECRET_KEY = "TaK+HaV^uvSHEFsFVfypW#7g9^k*Z8$V";
+    @Value("${jwt.secret-key}")
+    private String SECRET_KEY;
 
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
@@ -28,11 +32,17 @@ public class JwtUtil {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parser()
-                .verifyWith(getSigningKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+       try{
+           return Jwts.parser()
+                   .verifyWith(getSigningKey())
+                   .build()
+                   .parseSignedClaims(token)
+                   .getPayload();
+       } catch (SignatureException e) {
+           throw new IllegalArgumentException("Authentication token is invalid.",e);
+       }catch (ExpiredJwtException e){
+           throw new IllegalArgumentException("Authentication token is expired.",e);
+       }
     }
 
     private Boolean isTokenExpired(String token) {
@@ -51,7 +61,7 @@ public class JwtUtil {
                 .header().empty().add("typ","JWT")
                 .and()
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 5 minutes expiration time
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60* 60)) // 5 minutes expiration time
                 .signWith(getSigningKey())
                 .compact();
     }

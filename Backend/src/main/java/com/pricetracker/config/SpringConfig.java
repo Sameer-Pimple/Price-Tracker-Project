@@ -28,20 +28,32 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SpringConfig {
 
     private final UserDetailsServiceImpl userDetailsService;
+    private final JwtFilter jwtFilter;
 
-    public SpringConfig(UserDetailsServiceImpl userDetailsService) {
+    public SpringConfig(UserDetailsServiceImpl userDetailsService, JwtFilter jwtFilter) {
         this.userDetailsService = userDetailsService;
+        this.jwtFilter = jwtFilter;
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http)
+            throws Exception {
 
-
-        return http.authorizeHttpRequests(request -> request
-                        .requestMatchers( "/user/**").authenticated()
-                        .anyRequest().permitAll())
-                .httpBasic(Customizer.withDefaults())
+        return http
                 .csrf(AbstractHttpConfigurer::disable)
+
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(
+                                SessionCreationPolicy.STATELESS))
+
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers("/user/**").authenticated()
+                        .requestMatchers("/api/alerts/**").authenticated()
+                        .anyRequest().permitAll())
+
+                .addFilterBefore(jwtFilter,
+                        UsernamePasswordAuthenticationFilter.class)
+
                 .build();
     }
 
@@ -57,7 +69,6 @@ public class SpringConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 
 }
 
