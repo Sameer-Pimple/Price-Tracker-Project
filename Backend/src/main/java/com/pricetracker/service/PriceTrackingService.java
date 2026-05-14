@@ -14,6 +14,7 @@ import com.pricetracker.service.ScrapersService.FlipshopeScraperService;
 import com.pricetracker.util.ScraperHelper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -39,7 +40,7 @@ public class PriceTrackingService {
     private final PriceHistoryService priceHistoryService;
     private final StoreSalesService storeSalesService;
 
-    public TrackResultDTO trackByAmazonUrl(String url) {
+    public ResponseEntity<ScraperDTO> trackByAmazonUrl(String url) {
 
         //Getting ASIN
         String asin = ScraperHelper.extractAsin(url);
@@ -52,10 +53,13 @@ public class PriceTrackingService {
             // 1. Scrape latest data from Amazon
             Optional<ScraperDTO> scraperDTO = amazonScraperService.scrapeAmazonProduct(url);
             if (scraperDTO.isEmpty()) {
-                return new TrackResultDTO(false, "Unable to fetch product data", null);
+                ResponseEntity.notFound();
             }
 
             ScraperDTO dto = scraperDTO.get();
+            dto.setSuccess(true);
+            dto.setMessage("Successful");
+            dto.setProductPid(product.getPid());
 
             //Getting Snapshot of Product
             Optional<ProductSnapshots> snapshotOpt = snapshotsRepo.findByProduct(product);
@@ -84,11 +88,7 @@ public class PriceTrackingService {
                 priceHistoryRepo.save(history);
             }
 
-            return new TrackResultDTO(
-                    true,
-                    "Product already exists, tracking updated",
-                    product.getPid()
-            );
+            return ResponseEntity.ok(dto);
         }
 
         RootDTO rootDTO = flipshopeScraperService.scrapeFlipshopProduct(url);
@@ -128,10 +128,18 @@ public class PriceTrackingService {
         storeSalesService.saveSales(storeSaleList);
 
 
-        return new TrackResultDTO(
-                true,
-                "Product tracked successfully",
-                product.getPid()
+        return ResponseEntity.ok(
+                new ScraperDTO(
+                        productDTO.getPrice(),
+                        productDTO.getMrp(),
+                        productDTO.getRating(),
+                        productDTO.getAvailability(),
+                        productDTO.getDiscount(),
+                        true,
+                        "Successful",
+                        "0"
+
+                )
         );
     }
 

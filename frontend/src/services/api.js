@@ -300,7 +300,7 @@ const realApi = {
    * Contract: POST /api/scrape/amazon
    */
   checkLiveStatus: async (url) => {
-    const data = await request("/api/scrape/amazon", {
+    const data = await request("/api/track", {
       method: "POST",
       body: JSON.stringify({ url }),
     });

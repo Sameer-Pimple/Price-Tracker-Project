@@ -47,6 +47,7 @@ const Product = () => {
     setCheckingLive(true);
     try {
       const result = await api.checkLiveStatus(productURL);
+      window.location.reload();
       setLiveData(result);
     } catch (err) {
       alert(
@@ -55,7 +56,7 @@ const Product = () => {
     } finally {
       setCheckingLive(false);
     }
-  };
+  }
 
   if (loading) return <LoadingState message="Loading product details..." />;
 

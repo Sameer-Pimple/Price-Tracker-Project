@@ -1,5 +1,6 @@
 package com.pricetracker.controller;
 
+import com.pricetracker.DTO.Amazon.ScraperDTO;
 import com.pricetracker.DTO.Flipshope.TrackRequestDTO;
 import com.pricetracker.DTO.Flipshope.TrackResultDTO;
 import com.pricetracker.service.PriceTrackingService;
@@ -20,13 +21,11 @@ public class PriceTrackController {
     }
 
     @PostMapping
-    public ResponseEntity<TrackResultDTO> track(
+    public ResponseEntity<ScraperDTO> track(
             @RequestBody TrackRequestDTO dto) {
 
-        TrackResultDTO result =
-                trackingService.trackByAmazonUrl(dto.getUrl());
+        return trackingService.trackByAmazonUrl(dto.getUrl());
 
-        return ResponseEntity.ok(result);
     }
 }
 
