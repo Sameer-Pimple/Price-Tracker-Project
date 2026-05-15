@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams} from "react-router-dom";
 import api from "../services/api";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 import {
   LoadingState,
-  ErrorState,
   EmptyState,
 } from "../components/StatusComponents";
 import { formatCurrency, calculateTrends } from "../utils/frontend-helpers";
@@ -11,31 +12,64 @@ import History from "./History";
 import "./Product.css";
 
 const Product = () => {
+
+  const [form, setForm] = useState({targetPrice: ''});
+
+
+  const [showAlert, setShowAlert] = useState(false);
+  const [message, setMessage] = useState("");
+  const [alertType, setAlertType] = useState("success");
+
   const { pid } = useParams();
-  const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+
   const [liveData, setLiveData] = useState(null);
   const [checkingLive, setCheckingLive] = useState(false);
   
   const fetchProduct = React.useCallback(async () => {
-    setLoading(true);
-    setError(null);
     try {
       const data = await api.getProductById(pid);
-      if (!data) {
-        setError("Product not found.");
-      } else {
+      if (data) {
         setProduct(data);
       }
     } catch (err) {
-      console.error("Product fetch error:", err);
-      setError(err.message || "Failed to fetch product data");
+        console.error("Product fetch error:", err);
+        setAlertType("error");
+        setMessage(
+          err.message || "Failed to fetch product data"
+        );
+        setShowAlert(true);
     } finally {
       setLoading(false);
     }
   }, [pid]);
+
+ const handleCreateAlert = async (event) => {
+        event.preventDefault();
+
+        if (!form.targetPrice) {
+            setAlertType("error");
+            setMessage("Please enter target price");
+            setShowAlert(true);
+            return;
+        }
+
+        try {
+              await api.createAlert({pid,
+                targetPrice: Number(form.targetPrice)
+            });
+            setForm({ targetPrice: '' });
+            setAlertType("success");
+            setMessage("Alert created successfully");
+            setShowAlert(true);
+            return;
+        } catch (err) {
+            setAlertType("error");
+            setMessage(err.message || "Unable to create alert");
+            setShowAlert(true);
+        }
+    };
   
   useEffect(() => {
     fetchProduct();
@@ -50,27 +84,17 @@ const Product = () => {
       window.location.reload();
       setLiveData(result);
     } catch (err) {
-      alert(
-        "Live check failed. Amazon might be limiting requests. Please try again later."
+        setAlertType("error");
+      setMessage(
+        "Live check failed. Amazon might be limiting requests."
       );
+      setShowAlert(true);
     } finally {
       setCheckingLive(false);
     }
   }
 
   if (loading) return <LoadingState message="Loading product details..." />;
-
-  if (error)
-    return (
-      <div>
-        <ErrorState message={error} onRetry={fetchProduct} />
-        <div style={{ textAlign: "center", marginTop: "1rem" }}>
-          <button onClick={() => navigate("/")} className="btn-secondary">
-            &larr; Back to Home
-          </button>
-        </div>
-      </div>
-    );
 
   if (!product) return <EmptyState message="Product not found" />;
 
@@ -138,7 +162,7 @@ const Product = () => {
               </div>
             )}
             <div className="text-helper" style={{ marginTop: "0.5rem" }}>
-              {liveData ? "Last tracked price" : "Live price from Amazon"}
+              {liveData ? "Live price from Amazon" : "Last tracked price"}
             </div>
           </div>
 
@@ -172,35 +196,65 @@ const Product = () => {
               </span>
             </div>
           </div>
-
-          {/* Action Bar */}
-          <div className="action-bar">
-            {product.pid && (
-              <a
-                href={productURL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-primary"
-              >
-                View on Amazon ↗
-              </a>
-            )}
-
-            <button
-              onClick={handleLiveCheck}
-              disabled={checkingLive}
-              className="btn-secondary"
-            >
-              {checkingLive ? "Checking..." : "Check Live"}
-            </button>
-          </div>
         </div>
       </div>
+
+      {/* Action Bar */}
+                <div className="action-bar">
+                  {product.pid && (
+                    <a
+                      href={productURL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-primary"
+                    >
+                      View on Amazon ↗
+                    </a>
+                  )}
+
+                  <button
+                    onClick={handleLiveCheck}
+                    disabled={checkingLive}
+                    className="btn-secondary"
+                  >
+                    {checkingLive ? "Checking..." : "Check Live"}
+                  </button>
+                   <form className="alert-form" onSubmit={handleCreateAlert}>
+                       <input
+                          type="number"
+                          placeholder="Target price"
+                          required
+                          value={form.targetPrice}
+                          onChange={(event) => setForm(prev => ({ ...prev, targetPrice: event.target.value }))}
+                          className="alert-input"
+                          min="0"
+                          />
+                      <button type="submit" className="btn-primary">Set Alert</button>
+                   </form>
+                </div>
 
       <div style={{ marginTop: "2.5rem" }}>
         <History history={product.graph_data} />
       </div>
-    </div>
+
+      <Snackbar
+        open={showAlert}
+        autoHideDuration={3000}
+        onClose={() => setShowAlert(false)}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "center",
+        }}
+      >
+        <Alert
+          onClose={() => setShowAlert(false)}
+          severity={alertType}
+          variant="filled"
+        >
+          {message}
+        </Alert>
+      </Snackbar>
+      </div>
   );
 };
 

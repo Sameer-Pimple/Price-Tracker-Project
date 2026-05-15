@@ -5,6 +5,7 @@ import com.pricetracker.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -40,6 +41,8 @@ public class SpringConfig {
             throws Exception {
 
         return http
+                .cors(Customizer.withDefaults())
+
                 .csrf(AbstractHttpConfigurer::disable)
 
                 .sessionManagement(session ->
@@ -47,8 +50,13 @@ public class SpringConfig {
                                 SessionCreationPolicy.STATELESS))
 
                 .authorizeHttpRequests(request -> request
+
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
                         .requestMatchers("/user/**").authenticated()
+
                         .requestMatchers("/api/alerts/**").authenticated()
+
                         .anyRequest().permitAll())
 
                 .addFilterBefore(jwtFilter,
@@ -56,7 +64,6 @@ public class SpringConfig {
 
                 .build();
     }
-
 
 
     @Bean

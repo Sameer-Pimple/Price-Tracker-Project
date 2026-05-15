@@ -22,7 +22,10 @@ public class UserAlert {
     private Long alertId;
 
     private Double targetPrice;
+
+    @Enumerated(EnumType.STRING)
     private AlertType type;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -34,8 +37,20 @@ public class UserAlert {
 
     // Many alerts belong to one product (via ASIN)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
+
+    // Auto set timestamps
+    @PrePersist
+    public void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 
 }
 

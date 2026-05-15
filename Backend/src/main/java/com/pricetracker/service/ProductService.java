@@ -12,7 +12,7 @@ public interface ProductService{
 
     Product getOrCreateProduct(ProductDTO dto);
 
-    Optional<Product> getProductById(Long id);
+    Product getProductById(Long id);
 
     Optional<Product> getProductByPid(String Pid);
 

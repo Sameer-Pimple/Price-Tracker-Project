@@ -12,8 +12,11 @@ import "./Home.css";
 
 const Home = () => {
     const location = useLocation();
+
     const [showAlert, setShowAlert] = useState(false);
-    const [message, setMessage] = useState("");
+      const [message, setMessage] = useState("");
+      const [alertType, setAlertType] = useState("success");
+
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [pageState, setPageState] = useState("loading"); // loading, success, error
@@ -76,7 +79,7 @@ const Home = () => {
         }
       } else {
         setTrackState("error");
-        alert(data?.message || "Failed to track product.");
+        alert( "Failed to track product.");
       }
     } catch (error) {
       setTrackState("error");
@@ -104,14 +107,22 @@ const Home = () => {
   return (
     <div style={{ paddingBottom: "4rem" }}>
      <Snackbar
-        open={showAlert}
-        autoHideDuration={3000}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-     >
-        <Alert severity="success">
-           {message}
-        </Alert>
-     </Snackbar>
+             open={showAlert}
+             autoHideDuration={3000}
+             onClose={() => setShowAlert(false)}
+             anchorOrigin={{
+               vertical: "top",
+               horizontal: "center",
+             }}
+           >
+             <Alert
+               onClose={() => setShowAlert(false)}
+               severity={alertType}
+               variant="filled"
+             >
+               {message}
+             </Alert>
+           </Snackbar>
       <div className="dashboard-header">
         <form onSubmit={handleUrlSubmit} className="track-input-form">
           <div className="input-group-unified">

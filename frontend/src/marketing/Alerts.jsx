@@ -184,6 +184,20 @@ const Alerts = () => {
                 </form>
             </section>
 
+            <section className="alerts-create">
+                            <form className="alert-form" onSubmit={handleCreateAlert}>
+                                <input
+                                    type="number"
+                                    placeholder="Target price"
+                                    value={form.targetPrice}
+                                    onChange={(event) => setForm(prev => ({ ...prev, targetPrice: event.target.value }))}
+                                    className="alert-input"
+                                    min="0"
+                                />
+                                <button type="submit" className="btn-primary">Set Alert</button>
+                            </form>
+                        </section>
+
             {loading && <LoadingState message="Checking your alerts..." />}
 
             {error && <ErrorState message={error} onRetry={fetchAlerts} />}

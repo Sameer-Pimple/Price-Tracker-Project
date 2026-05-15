@@ -50,8 +50,8 @@ public class UserController {
     public ResponseEntity<Map<String,String>> login(@RequestBody UserCreateRequest userReq) {
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(userReq.getName(), userReq.getPassword()));
-            String jwt = jwtUtil.generateToken(userReq.getName());
+                    new UsernamePasswordAuthenticationToken(userReq.getEmail(), userReq.getPassword()));
+            String jwt = jwtUtil.generateToken(userReq.getEmail());
 
             Map<String, String> response = new HashMap<>();
             response.put("token", jwt);

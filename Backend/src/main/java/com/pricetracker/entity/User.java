@@ -1,5 +1,6 @@
 package com.pricetracker.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +25,7 @@ public class User {
     private String email;
 
     private String username;
+    @JsonIgnore
     private String password;
     @Column(unique = true, nullable = false)
     private Long mobileNumber;
@@ -31,14 +33,11 @@ public class User {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    // One user can have multiple alerts
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserAlert> alerts;
-
 
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
     protected void onUpdate() {

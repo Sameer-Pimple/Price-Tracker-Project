@@ -11,7 +11,11 @@ import Snackbar from "@mui/material/Snackbar";
 
 const Login = () => {
     const navigate = useNavigate();
+
     const [showAlert, setShowAlert] = useState(false);
+    const [message, setMessage] = useState("");
+    const [alertType, setAlertType] = useState("success");
+
     const { login } = useAuth();
   const [formData, setFormData] = useState({
     username: "",
@@ -56,7 +60,7 @@ const handleSubmit = async (e) => {
   
   try {
     const data = await api.loginUser({
-      name: formData.username,
+      email: formData.username,
       password: formData.password,
     });
 
@@ -72,14 +76,14 @@ const handleSubmit = async (e) => {
          }
       });
   } catch (error) {
-    console.error("Login Error:", error);
-    setErrors({ api: "Invalid username or password" });
-                  setShowAlert(true);
+      console.error("Login Error:", error);
 
-                  setTimeout(() => {
-                     setShowAlert(false);
-                  }, 3000);
-  }
+      setErrors({ api: "Invalid username or password" });
+
+      setMessage("Invalid username or password");
+      setAlertType("error");
+      setShowAlert(true);
+    }
 };
 
 
@@ -89,12 +93,20 @@ const handleSubmit = async (e) => {
         <Snackbar
                 open={showAlert}
                 autoHideDuration={3000}
-                anchorOrigin={{ vertical: "top", horizontal: "right" }}
-             >
-                <Alert severity="error">
-                   {"Invalid username or password"}
+                onClose={() => setShowAlert(false)}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "center",
+                }}
+              >
+                <Alert
+                  onClose={() => setShowAlert(false)}
+                  severity={alertType}
+                  variant="filled"
+                >
+                  {message}
                 </Alert>
-             </Snackbar>
+              </Snackbar>
       <div className="login-card">
         <img src="/logo.ico" alt="Logo" className="icon-box" />
 

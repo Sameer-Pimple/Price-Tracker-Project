@@ -26,18 +26,18 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<Product> getAllProduct(){
-        return productService.getAllProduct();
+    public ResponseEntity<List<Product>> getAllProduct(){
+        return ResponseEntity.ok(productService.getAllProduct());
     }
 
     @GetMapping("/All")
-    public List<ProductListDTO> getAllProductHome(){
-        return productService.getAllProductWithInfo();
+    public ResponseEntity<List<ProductListDTO>> getAllProductHome(){
+        return ResponseEntity.ok(productService.getAllProductWithInfo());
     }
 
     @GetMapping("/{id}")
-    public Product getByID(@PathVariable Long id){
-        return productService.getProductById(id).orElseThrow(() -> new RuntimeException("Product not found"));
+    public ResponseEntity<Product> getByID(@PathVariable Long id){
+        return ResponseEntity.ok(productService.getProductById(id));
     }
 
     // @GetMapping("Details/{id}")
@@ -46,8 +46,8 @@ public class ProductController {
     // }
     
     @GetMapping("Details/{pid}")
-    public ProductDetailsDTO getDetailsByPID(@PathVariable String pid) {
-        return productService.getProductWithDetail(pid);
+    public ResponseEntity<ProductDetailsDTO> getDetailsByPID(@PathVariable String pid) {
+        return ResponseEntity.ok(productService.getProductWithDetail(pid));
     }
 }
 

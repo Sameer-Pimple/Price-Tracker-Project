@@ -40,9 +40,13 @@ public class UserAlertServiceImpl implements UserAlertService {
         User user = userRepo.findByEmail(curruser.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        Product product = productRepo.findById(dto.getProductId())
+        Product product = productRepo.findByPid(dto.getPid())
                 .orElseThrow(() -> new RuntimeException("Product not found"));
+        boolean alreadyExists = alertRepo.existsByUserIdAndProductId(user.getId(),product.getId());
 
+        if(alreadyExists){
+            throw new RuntimeException("Alert already exists");
+        }
         UserAlert alert = new UserAlert();
         alert.setUser(user);
         alert.setProduct(product);

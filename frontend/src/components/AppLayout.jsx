@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import './AppLayout.css';
 import Button from '@mui/material/Button';
+import Navbar from './Navbar'
 import { useAuth } from "../context/AuthContext";
 
 const AppLayout = ({ children }) => {
@@ -58,19 +59,7 @@ const AppLayout = ({ children }) => {
                     </>
                  )
               }
-              <button
-                className="theme-toggle"
-                onClick={() => {
-                  const root = document.documentElement;
-                  const current = root.getAttribute("data-theme");
-                  root.setAttribute(
-                    "data-theme",
-                    current === "dark" ? "light" : "dark"
-                  );
-                }}
-              >
-                🌙
-              </button>
+                    <Navbar/>
             </div>
           </div>
         </header>
