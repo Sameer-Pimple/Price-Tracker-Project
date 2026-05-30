@@ -1,34 +1,31 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import api from '../services/api';
+import FocusTrap from '@mui/material/Unstable_TrapFocus';
+import Box from "@mui/material/Box";
 import { LoadingState, ErrorState, EmptyState } from '../components/StatusComponents';
 import "./Alerts.css";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 const Alerts = () => {
+
+    const [showAlert, setShowAlert] = useState(false);
+    const [message, setMessage] = useState(null);
+    const [severity, setSeverity] = useState(null);
+
     const [alerts, setAlerts] = useState([]);
-    const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [filters, setFilters] = useState({
-        status: 'ALL',
-        sortBy: 'TARGET_ASC'
-    });
-    const [form, setForm] = useState({
-        productId: '',
-        productTitle: '',
-        targetPrice: '',
-        currency: 'INR'
-    });
+    const [open, setOpen] = useState(false);
+    const [selectedAlert, setSelectedAlert] = useState(null);
+    const [updatedPrice, setUpdatedPrice] = useState(null);
 
     const fetchAlerts = async () => {
         setLoading(true);
         setError(null);
         try {
-            const [alertData, productData] = await Promise.all([
-                api.getAlerts(),
-                api.getAllProducts()
-            ]);
+            const alertData = await api.getAlerts();
             setAlerts(alertData);
-            setProducts(productData);
         } catch (err) {
             setError(err.message || 'Unable to load alerts');
         } finally {
@@ -40,46 +37,26 @@ const Alerts = () => {
         fetchAlerts();
     }, []);
 
-    const suggestions = useMemo(() => {
-        if (!form.productTitle.trim()) return [];
-        const query = form.productTitle.toLowerCase();
-        return products
-            .filter(product => product.title?.toLowerCase().includes(query))
-            .slice(0, 6);
-    }, [form.productTitle, products]);
 
-    const handleSelectProduct = (product) => {
-        setForm(prev => ({
-            ...prev,
-            productId: product.id || '',
-            productTitle: product.title || '',
-            currency: product.price?.currency || prev.currency
-        }));
-    };
-
-    const handleCreateAlert = async (event) => {
-        event.preventDefault();
-        if (!form.productTitle || !form.targetPrice) return;
+    const handleUpdate = async () => {
 
         try {
-            const created = await api.createAlert({
-                productId: form.productId || undefined,
-                productTitle: form.productTitle.trim(),
-                targetPrice: Number(form.targetPrice),
-                currency: form.currency
-            });
-            setAlerts((prev) => [created, ...prev]);
-            setForm({ productId: '', productTitle: '', targetPrice: '', currency: form.currency });
-        } catch (err) {
-            setError(err.message || 'Unable to create alert');
-        }
-    };
 
-    const handleToggle = async (alert) => {
-        const nextStatus = alert.status === 'ACTIVE' ? 'PAUSED' : 'ACTIVE';
-        try {
-            const updated = await api.updateAlert(alert.id, { status: nextStatus });
-            setAlerts((prev) => prev.map(item => item.id === alert.id ? updated : item));
+            const updated = await api.updateAlert(
+                selectedAlert.id,
+                {
+                    targetPrice: Number(updatedPrice)
+                }
+            );
+
+            setAlerts((prev) =>
+                prev.map(item =>
+                    item.id === selectedAlert.id ? updated : item
+                )
+            );
+
+            setOpen(false);
+
         } catch (err) {
             setError(err.message || 'Unable to update alert');
         }
@@ -94,109 +71,32 @@ const Alerts = () => {
         }
     };
 
-    const filteredAlerts = useMemo(() => {
-        let next = [...alerts];
-
-        if (filters.status !== 'ALL') {
-            next = next.filter(alert => alert.status === filters.status);
-        }
-
-        next.sort((a, b) => {
-            if (filters.sortBy === 'TARGET_ASC') {
-                return Number(a.targetPrice) - Number(b.targetPrice);
-            }
-            if (filters.sortBy === 'TARGET_DESC') {
-                return Number(b.targetPrice) - Number(a.targetPrice);
-            }
-            if (filters.sortBy === 'LAST_TRIGGERED') {
-                return new Date(b.lastTriggered || 0) - new Date(a.lastTriggered || 0);
-            }
-            if (filters.sortBy === 'TITLE') {
-                return a.productTitle.localeCompare(b.productTitle);
-            }
-            return 0;
-        });
-
-        return next;
-    }, [alerts, filters]);
 
     return (
         <div className="alerts-container">
-            {/* Page Heading */}
+            <Snackbar
+                         open={showAlert}
+                         autoHideDuration={3000}
+                         onClose={() => setShowAlert(false)}
+                         anchorOrigin={{
+                           vertical: "top",
+                           horizontal: "center",
+                         }}
+                       >
+                         <Alert
+                           onClose={() => setShowAlert(false)}
+                           severity={severity}
+                           variant="filled"
+                         >
+                           {message}
+                         </Alert>
+                 </Snackbar>
             <div className="alerts-header">
                 <h1>Price Alerts</h1>
                 <p>Never miss a deal. Set alerts and get notified when your target price hits.</p>
             </div>
 
-            {/* Quick Create */}
-            <section className="alerts-create">
-                <h2>Create Alert</h2>
-                <form className="alert-form" onSubmit={handleCreateAlert}>
-                    <div className="alert-autocomplete">
-                        <input
-                            type="text"
-                            placeholder="Search tracked products"
-                            value={form.productTitle}
-                            onChange={(event) => setForm(prev => ({
-                                ...prev,
-                                productTitle: event.target.value,
-                                productId: ''
-                            }))}
-                            className="alert-input"
-                        />
-                        {suggestions.length > 0 && (
-                            <div className="alert-suggestions">
-                                {suggestions.map((product) => (
-                                    <button
-                                        type="button"
-                                        key={product.id}
-                                        className="alert-suggestion"
-                                        onClick={() => handleSelectProduct(product)}
-                                    >
-                                        <span>{product.title}</span>
-                                        {product.price?.current ? (
-                                            <span className="alert-suggestion-meta">
-                                                {product.price.currency || '₹'} {Number(product.price.current).toLocaleString()}
-                                            </span>
-                                        ) : null}
-                                    </button>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                    <input
-                        type="number"
-                        placeholder="Target price"
-                        value={form.targetPrice}
-                        onChange={(event) => setForm(prev => ({ ...prev, targetPrice: event.target.value }))}
-                        className="alert-input"
-                        min="0"
-                    />
-                    <select
-                        value={form.currency}
-                        onChange={(event) => setForm(prev => ({ ...prev, currency: event.target.value }))}
-                        className="alert-select"
-                    >
-                        <option value="INR">INR</option>
-                        <option value="USD">USD</option>
-                    </select>
-                    <button type="submit" className="btn-primary">Save Alert</button>
-                </form>
-            </section>
 
-            <section className="alerts-create">
-                            <form className="alert-form" onSubmit={handleCreateAlert}>
-                                <input
-                                    type="number"
-                                    placeholder="Target price"
-                                    value={form.targetPrice}
-                                    onChange={(event) => setForm(prev => ({ ...prev, targetPrice: event.target.value }))}
-                                    className="alert-input"
-                                    min="0"
-                                />
-                                <button type="submit" className="btn-primary">Set Alert</button>
-                            </form>
-                        </section>
 
             {loading && <LoadingState message="Checking your alerts..." />}
 
@@ -212,71 +112,123 @@ const Alerts = () => {
                 <section className="alerts-list">
                     <div className="alerts-toolbar">
                         <h2>Your Alerts</h2>
-                        <div className="alerts-controls">
-                            <select
-                                value={filters.status}
-                                onChange={(event) => setFilters(prev => ({ ...prev, status: event.target.value }))}
-                                className="alert-select"
-                            >
-                                <option value="ALL">All</option>
-                                <option value="ACTIVE">Active</option>
-                                <option value="PAUSED">Paused</option>
-                            </select>
-                            <select
-                                value={filters.sortBy}
-                                onChange={(event) => setFilters(prev => ({ ...prev, sortBy: event.target.value }))}
-                                className="alert-select"
-                            >
-                                <option value="TARGET_ASC">Target price (low → high)</option>
-                                <option value="TARGET_DESC">Target price (high → low)</option>
-                                <option value="LAST_TRIGGERED">Last triggered</option>
-                                <option value="TITLE">Product name</option>
-                            </select>
-                        </div>
+
                     </div>
                     <div className="alerts-grid">
-                        {filteredAlerts.map(alert => (
+                        {alerts.map(alert => (
                             <div className="alert-card" key={alert.id}>
                                 <div>
-                                    <h3>{alert.productTitle}</h3>
+                                    <div className="alert-head">
+                                        {alert.productImage && (
+                                            <img
+                                              src={alert.productImage}
+                                              alt={alert.productTitle}
+                                              className="alert-image"
+                                            />
+                                        )}
+                                        <h3>{alert.productTitle}</h3>
+                                    </div>
+
                                     <p className="alert-meta">
-                                        Target: {alert.currency || '₹'} {Number(alert.targetPrice).toLocaleString()}
+                                        Target Price: ₹ {Number(alert.targetPrice).toLocaleString()}
                                     </p>
-                                    {alert.currentPrice ? (
-                                        <p className="alert-meta">
-                                            Current: {alert.currency || '₹'} {Number(alert.currentPrice).toLocaleString()}
-                                        </p>
-                                    ) : null}
-                                    {alert.lastTriggered && (
-                                        <p className="alert-meta">
-                                            Last triggered: {new Date(alert.lastTriggered).toLocaleDateString()}
-                                        </p>
-                                    )}
+
                                 </div>
                                 <div className="alert-actions">
                                     <button
                                         type="button"
                                         className="btn-secondary"
-                                        onClick={() => handleToggle(alert)}
+                                        onClick={() => {
+                                            setSelectedAlert(alert);
+                                            setUpdatedPrice(alert.targetPrice);
+                                            setOpen(true);
+                                        }}
                                     >
-                                        {alert.status === 'ACTIVE' ? 'Pause' : 'Resume'}
+                                        Edit
                                     </button>
                                     <button
                                         type="button"
                                         className="alert-delete"
-                                        onClick={() => handleDelete(alert.id)}
+                                        onClick={() => {handleDelete(alert.id);
+                                            setMessage("Alert Deleted");
+                                            setSeverity("warning");
+                                            setShowAlert("true")}
+                                            }
                                     >
                                         Delete
                                     </button>
                                 </div>
-                                <span className={`alert-status ${alert.status === 'ACTIVE' ? 'status-active' : 'status-paused'}`}>
-                                    {alert.status === 'ACTIVE' ? 'Active' : 'Paused'}
+                                <span className={`alert-status ${alert.type === 'ACTIVE' ? 'status-active' : 'status-paused'}`}>
+                                    {alert.type === 'ACTIVE' ? 'Active' : 'Paused'}
                                 </span>
                             </div>
                         ))}
                     </div>
                 </section>
             )}
+
+        {open && (
+                                                     <FocusTrap open>
+
+                                                         <Box
+                                                             tabIndex={-1}
+                                                             sx={{
+                                                                 position: "fixed",
+                                                                 top: "50%",
+                                                                 left: "50%",
+                                                                 transform: "translate(-50%, -50%)",
+                                                                 width: 350,
+                                                                 p: 3,
+                                                                 backgroundColor: "var(--surface-color)",
+                                                                 borderRadius: 2,
+                                                                 boxShadow: 24,
+                                                                 zIndex: 999,
+                                                             }}
+                                                         >
+
+                                                             <h2>Update Alert</h2>
+                                                               <p>Target Price </p>
+                                                            <input
+                                                                type="number"
+                                                                value={updatedPrice}
+                                                                onChange={(e) => setUpdatedPrice(e.target.value)}
+                                                                style={{
+                                                                    border: "1px solid #d3d3d3",
+                                                                    outline: "none",
+                                                                    padding: "8px 12px",
+                                                                    borderRadius: "6px",
+                                                                    fontSize: "14px",
+                                                                    textDecoration: "none"
+                                                                }}
+                                                            />
+
+                                                             <br /><br />
+
+                                                             <button
+                                                                 type="button"
+                                                                 onClick={() => {handleUpdate();
+                                                                    setMessage("Alert Updated");
+                                                                    setSeverity("success")
+                                                                     setShowAlert("true");}
+                                                                 }
+                                                                 className="btn-secondary"
+
+                                                             >
+                                                                 Save
+                                                             </button>
+                                                             <button
+                                                                 onClick={() => setOpen(false)}
+                                                                 style={{ marginLeft: "10px" }}
+                                                                  type="button"
+                                                                  className="alert-delete"
+                                                             >
+                                                                 Close
+                                                             </button>
+
+                                                         </Box>
+
+                                                     </FocusTrap>
+                                                 )}
 
             {/* Footer */}
             <footer>

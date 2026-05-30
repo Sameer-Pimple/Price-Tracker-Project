@@ -10,10 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
+import java.util.Map;
 
-import static java.util.stream.Collectors.toList;
 
 @RestController
 @RequestMapping("/api/alerts")
@@ -41,5 +40,17 @@ public class AlertController {
     public ResponseEntity<Void> createAlert(@RequestBody UserAlertDTO dto, @AuthenticationPrincipal UserDetails user){
         userAlertService.createAlert(dto , user);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAlert(@PathVariable Long id){
+        userAlertService.deleteAlert(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<UserAlertResponseDTO> updateAlert(@PathVariable Long id, @RequestBody Map<String, Object> updates){
+        UserAlert alert = userAlertService.updateAlert(id,updates);
+        return ResponseEntity.ok(mapper.toEntity(alert));
     }
 }

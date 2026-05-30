@@ -1,6 +1,5 @@
 package com.pricetracker.repository;
 
-import com.pricetracker.DTO.Flipshope.GraphDataDTO;
 import com.pricetracker.entity.PriceHistory;
 import com.pricetracker.entity.Product;
 import com.pricetracker.entity.Store;

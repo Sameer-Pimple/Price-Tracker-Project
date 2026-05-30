@@ -8,13 +8,13 @@ import com.pricetracker.entity.UserAlert;
 import com.pricetracker.repository.ProductRepo;
 import com.pricetracker.repository.UserAlertRepo;
 import com.pricetracker.repository.UserRepo;
+import org.openqa.selenium.Alert;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 
 @Service
@@ -85,5 +85,27 @@ public class UserAlertServiceImpl implements UserAlertService {
         User user = userRepo.findByEmail(curruser.getUsername()).orElseThrow(() -> new RuntimeException("User Not Found"));
         return alertRepo.findByUserId(user.getId());
     }
+
+    @Override
+    public void deleteAlert(Long AlertId){
+        alertRepo.deleteById(AlertId);
+    }
+
+    @Override
+    public UserAlert updateAlert(Long id, Map<String, Object> updates){
+        UserAlert alert = alertRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Alert not found"));
+        if(updates.containsKey("targetPrice")){
+            Double targetPrice = Double.valueOf(
+                    updates.get("targetPrice").toString()
+            );
+
+            alert.setTargetPrice(targetPrice);
+        }
+        alertRepo.save(alert);
+        return alert;
+    }
+
+
 
 }

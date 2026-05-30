@@ -62,7 +62,7 @@ public class FlipshopeScraperService {
             options.addArguments("--disable-blink-features=AutomationControlled");
             options.addArguments("--no-sandbox");
             options.addArguments("--disable-dev-shm-usage");
-        //    options.addArguments("--headless=new");
+            options.addArguments("--headless=new");
 
             // ===== Random window size (fingerprint break) =====
             int width = 1200 + random.nextInt(600);

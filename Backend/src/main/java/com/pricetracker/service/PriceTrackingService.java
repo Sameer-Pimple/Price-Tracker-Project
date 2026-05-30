@@ -2,6 +2,7 @@ package com.pricetracker.service;
 
 import com.pricetracker.DTO.Flipshope.*;
 import com.pricetracker.DTO.Amazon.*;
+import com.pricetracker.DTO.SuccessScrapDTO;
 import com.pricetracker.entity.PriceHistory;
 import com.pricetracker.entity.Product;
 import com.pricetracker.entity.ProductSnapshots;
@@ -40,7 +41,7 @@ public class PriceTrackingService {
     private final PriceHistoryService priceHistoryService;
     private final StoreSalesService storeSalesService;
 
-    public ResponseEntity<ScraperDTO> trackByAmazonUrl(String url) {
+    public ResponseEntity<SuccessScrapDTO> trackByAmazonUrl(String url) {
 
         //Getting ASIN
         String asin = ScraperHelper.extractAsin(url);
@@ -51,15 +52,12 @@ public class PriceTrackingService {
             Product product = productOpt.get();
 
             // 1. Scrape latest data from Amazon
-            Optional<ScraperDTO> scraperDTO = amazonScraperService.scrapeAmazonProduct(url);
+            Optional<AmazonScraperDTO> scraperDTO = amazonScraperService.scrapeAmazonProduct(url);
             if (scraperDTO.isEmpty()) {
                 ResponseEntity.notFound();
             }
 
-            ScraperDTO dto = scraperDTO.get();
-            dto.setSuccess(true);
-            dto.setMessage("Successful");
-            dto.setProductPid(product.getPid());
+            AmazonScraperDTO dto = scraperDTO.get();
 
             //Getting Snapshot of Product
             Optional<ProductSnapshots> snapshotOpt = snapshotsRepo.findByProduct(product);
@@ -87,8 +85,11 @@ public class PriceTrackingService {
                 history.setStore(snapshotOpt.get().getStore());
                 priceHistoryRepo.save(history);
             }
-
-            return ResponseEntity.ok(dto);
+            return ResponseEntity.ok(new SuccessScrapDTO(
+                    true,
+                    "Successful",
+                    product.getPid()
+            ));
         }
 
         RootDTO rootDTO = flipshopeScraperService.scrapeFlipshopProduct(url);
@@ -129,15 +130,10 @@ public class PriceTrackingService {
 
 
         return ResponseEntity.ok(
-                new ScraperDTO(
-                        productDTO.getPrice(),
-                        productDTO.getMrp(),
-                        productDTO.getRating(),
-                        productDTO.getAvailability(),
-                        productDTO.getDiscount(),
+                new SuccessScrapDTO(
                         true,
                         "Successful",
-                        "0"
+                        productDTO.getPid()
 
                 )
         );

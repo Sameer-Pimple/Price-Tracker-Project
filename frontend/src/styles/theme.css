@@ -17,6 +17,7 @@
   --negative: var(--danger-color);
 
   --shadow-card: var(--card-shadow);
+  --bg-login-card: rgb(0 0 0 / 24%);
   --radius: 12px;
 }
 
@@ -38,4 +39,5 @@
   --negative: var(--danger-color);
 
   --shadow-card: var(--card-shadow);
+  --bg-login-card: #f3f4f624;
 }

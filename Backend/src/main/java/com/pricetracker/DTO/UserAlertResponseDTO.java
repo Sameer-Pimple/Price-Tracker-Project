@@ -10,6 +10,7 @@ import lombok.Setter;
 public class UserAlertResponseDTO {
 
     // Alert info
+    private Long id;
     private Double targetPrice;
     private String type;
 

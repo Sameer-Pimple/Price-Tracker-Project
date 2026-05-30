@@ -15,7 +15,7 @@
   border-radius: 20px;
   backdrop-filter: blur(20px);
   background: transparent;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 15px 35px var(--bg-login-card);
   text-align: center;
 }
 

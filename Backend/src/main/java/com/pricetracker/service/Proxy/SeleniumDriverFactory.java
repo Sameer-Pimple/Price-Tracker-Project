@@ -30,6 +30,7 @@ public class SeleniumDriverFactory {
         options.addArguments("--blink-settings=imagesEnabled=false"); // images skip karega → faster hoga
         options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/115.0.0.0 Safari/537.36");
         options.addArguments("accept-language=en-US,en;q=0.9");
+        options.addArguments("--headless=new");
 
         // Use proxy if valid, else local IP
         String proxy = proxies.isEmpty() ? "" : proxies.get(new Random().nextInt(proxies.size()));

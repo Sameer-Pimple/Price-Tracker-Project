@@ -81,8 +81,11 @@ const Product = () => {
     setCheckingLive(true);
     try {
       const result = await api.checkLiveStatus(productURL);
-      window.location.reload();
-      setLiveData(result);
+      if (result.success) {
+            const freshProductDetails = await api.getProductById(pid);
+            setProduct(freshProductDetails);
+            setLiveData(true);
+          }
     } catch (err) {
         setAlertType("error");
       setMessage(
@@ -102,9 +105,9 @@ const Product = () => {
   const displayPrice = liveData?.Price || product.price;
   const displayOriginalPrice = liveData?.MRP || product.mrp;
   const stats = calculateTrends(product.graph_data);
-  const averagePrice =
-    product.graph_data.reduce((sum, item) => sum + Number(item.min_price), 0) /
-    product.graph_data.length;
+  const averagePrice = product.graph_data && product.graph_data.length > 0
+    ? product.graph_data.reduce((sum, item) => sum + Number(item.min_price || 0), 0) / product.graph_data.length
+    : 0; // Default to 0 if there is no history data yet
 
   // Intelligence Data
   const { buySignal, predictedDrop } = product.intelligence || {};

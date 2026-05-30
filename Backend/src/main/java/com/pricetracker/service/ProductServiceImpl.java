@@ -39,7 +39,9 @@ public class ProductServiceImpl implements ProductService{
                     product.setPid(dto.getPid());
                     product.setTitle(dto.getTitle());
                     product.setCategory(dto.getCat());
-                    product.setImg_url(dto.getImgurl());
+                    product.setImg_url((dto.getImgurl() != null && !dto.getImgurl().trim().isEmpty())
+                            ? dto.getImgurl()
+                            : "https://thumbs.dreamstime.com/b/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available-236105299.jpg");
                     return repo.save(product);
                 });
     }

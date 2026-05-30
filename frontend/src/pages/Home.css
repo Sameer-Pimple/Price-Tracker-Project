@@ -149,30 +149,16 @@
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* ==============================
    PRODUCT CARD
 ============================== */
 
 .product-card {
-  background: #ffffff;
+  background: var(--card-bg);
   border-radius: 16px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--card-border);
   padding: 14px;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--card-shadow);
   transition: all 0.2s ease;
   cursor: pointer;
   display: flex;
@@ -182,7 +168,7 @@
 
 .product-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--card-shadow);
 }
 
 /* ==============================
@@ -225,7 +211,7 @@
 ============================== */
 
 .card-image-wrap {
-  background: #f3f4f6;
+  background: var(--card-bg);
   border-radius: 12px;
   padding: 14px;
   display: flex;
@@ -248,7 +234,7 @@
 .card-title {
   font-size: 15px;
   font-weight: 600;
-  color: #111827;
+  color: var(--text-muted);
   line-height: 1.35;
   margin-bottom: 6px;
 
@@ -295,7 +281,7 @@
 .card-price {
   font-size: 20px;
   font-weight: 700;
-  color: #111827;
+  color: var(--text-muted);
 }
 
 

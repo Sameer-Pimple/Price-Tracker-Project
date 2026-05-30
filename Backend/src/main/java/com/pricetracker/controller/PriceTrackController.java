@@ -1,8 +1,8 @@
 package com.pricetracker.controller;
 
-import com.pricetracker.DTO.Amazon.ScraperDTO;
+import com.pricetracker.DTO.Amazon.AmazonScraperDTO;
 import com.pricetracker.DTO.Flipshope.TrackRequestDTO;
-import com.pricetracker.DTO.Flipshope.TrackResultDTO;
+import com.pricetracker.DTO.SuccessScrapDTO;
 import com.pricetracker.service.PriceTrackingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +21,7 @@ public class PriceTrackController {
     }
 
     @PostMapping
-    public ResponseEntity<ScraperDTO> track(
+    public ResponseEntity<SuccessScrapDTO> track(
             @RequestBody TrackRequestDTO dto) {
 
         return trackingService.trackByAmazonUrl(dto.getUrl());

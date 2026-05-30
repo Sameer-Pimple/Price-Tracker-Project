@@ -2,7 +2,7 @@ package com.pricetracker.service.ScrapersService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.pricetracker.DTO.Amazon.ScraperDTO;
+import com.pricetracker.DTO.Amazon.AmazonScraperDTO;
 import com.pricetracker.service.Proxy.SeleniumDriverFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
@@ -29,9 +29,9 @@ public class AmazonScraperService {
     }
 
 
-    public Optional<ScraperDTO> scrapeAmazonProduct(String userUrl) {
+    public Optional<AmazonScraperDTO> scrapeAmazonProduct(String userUrl) {
 
-        ScraperDTO dto = new ScraperDTO();
+        AmazonScraperDTO dto = new AmazonScraperDTO();
         WebDriver driver = null; //abhi browser driver band hai
 
         try {

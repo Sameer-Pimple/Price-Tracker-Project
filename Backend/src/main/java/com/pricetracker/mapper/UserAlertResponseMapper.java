@@ -11,6 +11,8 @@ public class UserAlertResponseMapper {
 
         UserAlertResponseDTO dto = new UserAlertResponseDTO();
 
+        dto.setId(alert.getAlertId());
+
         dto.setTargetPrice(alert.getTargetPrice());
 
         dto.setType(alert.getType().name());

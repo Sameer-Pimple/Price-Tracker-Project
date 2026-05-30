@@ -2,7 +2,6 @@ package com.pricetracker.DTO;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.pricetracker.DTO.Flipshope.GraphDataDTO;
-import com.pricetracker.entity.PriceHistory;
 import lombok.Getter;
 import lombok.Setter;
 

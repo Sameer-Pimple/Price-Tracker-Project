@@ -6,8 +6,6 @@ import com.pricetracker.entity.Product;
 import com.pricetracker.entity.Store;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-
 @Component
 public class PriceHistoryMapper {
 

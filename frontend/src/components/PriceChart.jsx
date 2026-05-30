@@ -7,6 +7,7 @@ import {
   Tooltip,
   Legend,
   TimeScale,
+  Filler,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import React, { useState, useMemo } from "react";
@@ -22,7 +23,8 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  zoomPlugin
+  zoomPlugin,
+  Filler
 );
 
 const customTooltip = (context) => {

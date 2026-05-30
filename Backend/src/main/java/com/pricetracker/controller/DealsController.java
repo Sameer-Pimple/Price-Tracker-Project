@@ -1,11 +1,8 @@
 package com.pricetracker.controller;
 
-import com.pricetracker.DTO.Flipshope.ProductDTO;
 import com.pricetracker.DTO.ProductListDTO;
-import com.pricetracker.entity.Product;
 import com.pricetracker.service.ProductService;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController

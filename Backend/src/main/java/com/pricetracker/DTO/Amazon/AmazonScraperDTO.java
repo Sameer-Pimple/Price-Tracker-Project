@@ -10,14 +10,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ScraperDTO {
+public class AmazonScraperDTO {
     private Integer Price;
     private Integer MRP;
     private Float Rating;
     private String availability;
     private Integer discount;
-    private boolean success;
-    private String message;
-    private String productPid;
+
 
 }

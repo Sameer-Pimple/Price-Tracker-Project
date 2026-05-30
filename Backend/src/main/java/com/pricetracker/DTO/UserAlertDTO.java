@@ -1,7 +1,6 @@
 package com.pricetracker.DTO;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.pricetracker.config.AlertType;
 import lombok.Getter;
 import lombok.Setter;
 

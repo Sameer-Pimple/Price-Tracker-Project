@@ -73,14 +73,14 @@ const request = async (endpoint, options = {}) => {
      * Send HTTP request
      */
     const response = await fetch(url, config);
-
-    console.log("========== API REQUEST ==========");
-    console.log("URL:", url);
-    console.log("METHOD:", config.method || "GET");
-    console.log("HEADERS:", config.headers);
-    console.log("BODY:", options.body);
-    console.log("STATUS:", response.status);
-    console.log("================================");
+//
+//    console.log("========== API REQUEST ==========");
+//    console.log("URL:", url);
+//    console.log("METHOD:", config.method || "GET");
+//    console.log("HEADERS:", config.headers);
+//    console.log("BODY:", options.body);
+//    console.log("STATUS:", response.status);
+//    console.log("================================");
 
     /**
      * 204 = success but no content
@@ -120,7 +120,6 @@ const request = async (endpoint, options = {}) => {
       data = null;
     }
 
-    console.log("RESPONSE DATA:", data);
 
     /**
      * Handle backend errors
@@ -168,7 +167,7 @@ const request = async (endpoint, options = {}) => {
           break;
 
         case 500:
-          message = "Alert Already Exists";
+          message = "Something Went Wrong";
           break;
 
         default:
@@ -226,7 +225,6 @@ const realApi = {
       body: JSON.stringify({ url }),
     });
     return {
-      id: data?.productId ? data.productId.toString() : null,
       status: data?.success ? "active" : "error",
       message: data?.message || "",
       originalResponse: data,
@@ -345,16 +343,7 @@ const realApi = {
   getAlerts: async () => {
     try {
       const data = await request("/api/alerts");
-      if (!Array.isArray(data)) return [];
-      return data.map((alert) => ({
-        id: alert.id?.toString(),
-        productTitle: alert.productTitle || alert.title || "Untitled Product",
-        targetPrice: alert.targetPrice || alert.target || 0,
-        currentPrice: alert.currentPrice || 0,
-        currency: alert.currency || "INR",
-        status: alert.status || "ACTIVE",
-        lastTriggered: alert.lastTriggered || null,
-      }));
+      return Array.isArray(data) ? data : [];
     } catch (error) {
       console.warn("Failed to fetch alerts", error);
       return [];
@@ -376,15 +365,7 @@ const realApi = {
       method: "PATCH",
       body: JSON.stringify(updates),
     });
-    return {
-      id: data?.id?.toString() || id,
-      productTitle: data?.productTitle || data?.title || updates.productTitle,
-      targetPrice: data?.targetPrice || updates.targetPrice || 0,
-      currentPrice: data?.currentPrice || updates.currentPrice || 0,
-      currency: data?.currency || updates.currency || "INR",
-      status: data?.status || updates.status || "ACTIVE",
-      lastTriggered: data?.lastTriggered || updates.lastTriggered || null,
-    };
+    return data;
   },
 
 //    Contract: DELETE /api/alerts/:id ->Deletes an alert.

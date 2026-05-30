@@ -6,8 +6,6 @@ import com.pricetracker.entity.Product;
 import com.pricetracker.entity.Store;
 import com.pricetracker.mapper.PriceHistoryMapper;
 import com.pricetracker.repository.PriceHistoryRepo;
-import com.pricetracker.repository.ProductRepo;
-import com.pricetracker.repository.StoreRepo;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,14 +17,11 @@ public class PriceHistoryServiceImpl implements PriceHistoryService {
 
     private final PriceHistoryRepo repo;
     private final PriceHistoryMapper mapper;
-    private final ProductRepo productRepo;
-    private final StoreRepo storeRepo;
 
-    public PriceHistoryServiceImpl(PriceHistoryRepo repo, PriceHistoryMapper mapper, ProductRepo productRepo,StoreRepo storeRepo) {
+
+    public PriceHistoryServiceImpl(PriceHistoryRepo repo, PriceHistoryMapper mapper) {
         this.repo = repo;
         this.mapper = mapper;
-        this.productRepo = productRepo;
-        this.storeRepo = storeRepo;
     }
 
 

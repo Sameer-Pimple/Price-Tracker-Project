@@ -14,34 +14,41 @@ const Home = () => {
     const location = useLocation();
 
     const [showAlert, setShowAlert] = useState(false);
-      const [message, setMessage] = useState("");
-      const [alertType, setAlertType] = useState("success");
+    const [message, setMessage] = useState(null);
 
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [pageState, setPageState] = useState("loading"); // loading, success, error
   const [trackState, setTrackState] = useState("idle"); // idle, tracking, error
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
 
+
+
+  // 1. Handle Notifications / Snackbar (Runs when location state updates)
+  useEffect(() => {
+    if (location.state?.message) {
+      setMessage(location.state.message);
+      setShowAlert(true);
+
+      const timer = setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
+
+      navigate(location.pathname, {
+        replace: true,
+        state: {},
+      });
+
+      return () => clearTimeout(timer);
+    }
+  }, [location.pathname, location.state?.message, navigate]);
+
+
+  // 2. Fetch Dashboard Products (Only runs once on component mount)
   useEffect(() => {
     const fetchProducts = async () => {
-        if(location.state?.message){
-
-              setMessage(location.state.message);
-              setShowAlert(true);
-
-              setTimeout(() => {
-                 setShowAlert(false);
-              }, 3000);
-          navigate(location.pathname, {
-                   replace: true,
-                   state: {}
-                });
-           }
       try {
         const data = await api.getAllProducts();
-        // Client-side sort if needed, though backend does it.
-        // Start with raw data
         setProducts(data);
         setPageState("success");
       } catch (error) {
@@ -54,7 +61,7 @@ const Home = () => {
     };
 
     fetchProducts();
-  }, [location]);
+  }, []);
 
   const handleUrlSubmit = async (e) => {
     const url = e.target.elements["url-input"].value;
@@ -117,12 +124,12 @@ const Home = () => {
            >
              <Alert
                onClose={() => setShowAlert(false)}
-               severity={alertType}
+               severity={"success"}
                variant="filled"
              >
                {message}
              </Alert>
-           </Snackbar>
+     </Snackbar>
       <div className="dashboard-header">
         <form onSubmit={handleUrlSubmit} className="track-input-form">
           <div className="input-group-unified">
@@ -165,7 +172,7 @@ const Home = () => {
             Your Tracking List
           </h3>
           {products.length > 0 && (
-            <span className="badge badge-neutral">
+            <span className="stock-badge badge-neutral">
               {products.length} Products
             </span>
           )}
@@ -209,7 +216,7 @@ const Home = () => {
                   }
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && product.id) {
-                      navigate(`/product/${product.pid}`);
+                      navigate(`/products/${product.pid}`);
                     }
                   }}
                 >
@@ -288,7 +295,13 @@ const Home = () => {
                       >
                         Show History
                       </button>
-                      <button className="action-btn">Buy</button>
+                      <button className="action-btn"
+                      onClick={() =>
+                          window.open(`https://www.amazon.in/dp/${product.pid}`, "_blank")
+                        }
+                    >
+                    Buy
+                    </button>
                     </div>
                   </div>
                 </div>
