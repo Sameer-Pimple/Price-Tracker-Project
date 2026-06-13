@@ -1,18 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useCallback } from 'react';
+import { useNavigate} from "react-router-dom";
 import api from '../services/api';
 import FocusTrap from '@mui/material/Unstable_TrapFocus';
 import Box from "@mui/material/Box";
 import { LoadingState, ErrorState, EmptyState } from '../components/StatusComponents';
 import "./Alerts.css";
 import Snackbar from "@mui/material/Snackbar";
+import { useAuth } from "../context/AuthContext";
 import Alert from "@mui/material/Alert";
 
 const Alerts = () => {
-
     const [showAlert, setShowAlert] = useState(false);
     const [message, setMessage] = useState(null);
     const [severity, setSeverity] = useState(null);
+    const {accessToken} = useAuth() ;
 
+    const navigate = useNavigate();
     const [alerts, setAlerts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -20,22 +23,22 @@ const Alerts = () => {
     const [selectedAlert, setSelectedAlert] = useState(null);
     const [updatedPrice, setUpdatedPrice] = useState(null);
 
-    const fetchAlerts = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            const alertData = await api.getAlerts();
-            setAlerts(alertData);
-        } catch (err) {
-            setError(err.message || 'Unable to load alerts');
-        } finally {
-            setLoading(false);
-        }
-    };
+    const fetchAlerts = useCallback(async () => {
+                                            setLoading(true);
+                                            setError(null);
+                                            try {
+                                                const alertData = await api.getAlerts(accessToken);
+                                                setAlerts(alertData);
+                                            } catch (err) {
+                                                setError(err.message || 'Unable to load alerts');
+                                            } finally {
+                                                setLoading(false);
+                                            }
+                                        },[accessToken]);
 
     useEffect(() => {
         fetchAlerts();
-    }, []);
+    }, [fetchAlerts]);
 
 
     const handleUpdate = async () => {
@@ -46,7 +49,7 @@ const Alerts = () => {
                 selectedAlert.id,
                 {
                     targetPrice: Number(updatedPrice)
-                }
+                },accessToken
             );
 
             setAlerts((prev) =>
@@ -64,7 +67,7 @@ const Alerts = () => {
 
     const handleDelete = async (alertId) => {
         try {
-            await api.deleteAlert(alertId);
+            await api.deleteAlert(alertId,accessToken);
             setAlerts((prev) => prev.filter(alert => alert.id !== alertId));
         } catch (err) {
             setError(err.message || 'Unable to delete alert');
@@ -116,7 +119,18 @@ const Alerts = () => {
                     </div>
                     <div className="alerts-grid">
                         {alerts.map(alert => (
-                            <div className="alert-card" key={alert.id}>
+                            <div className="alert-card"
+                            key={alert.id}
+                            role="button"
+                            tabIndex={0}
+                            style={{ cursor: 'pointer' }} // Quick CSS hint to show it's clickable
+                            onClick={() => {alert.pid && navigate(`/products/${alert.pid}`)}}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter" && alert.pid) {
+                                    navigate(`/products/${alert.pid}`);
+                                }
+                            }}
+                            >
                                 <div>
                                     <div className="alert-head">
                                         {alert.productImage && (
@@ -138,7 +152,8 @@ const Alerts = () => {
                                     <button
                                         type="button"
                                         className="btn-secondary"
-                                        onClick={() => {
+                                        onClick={(e) => {
+                                            e.stopPropagation();
                                             setSelectedAlert(alert);
                                             setUpdatedPrice(alert.targetPrice);
                                             setOpen(true);
@@ -149,10 +164,12 @@ const Alerts = () => {
                                     <button
                                         type="button"
                                         className="alert-delete"
-                                        onClick={() => {handleDelete(alert.id);
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleDelete(alert.id);
                                             setMessage("Alert Deleted");
                                             setSeverity("warning");
-                                            setShowAlert("true")}
+                                            setShowAlert(true)}
                                             }
                                     >
                                         Delete
@@ -209,7 +226,7 @@ const Alerts = () => {
                                                                  onClick={() => {handleUpdate();
                                                                     setMessage("Alert Updated");
                                                                     setSeverity("success")
-                                                                     setShowAlert("true");}
+                                                                     setShowAlert(true);}
                                                                  }
                                                                  className="btn-secondary"
 

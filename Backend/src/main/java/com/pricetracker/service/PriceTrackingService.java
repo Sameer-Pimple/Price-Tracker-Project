@@ -12,21 +12,23 @@ import com.pricetracker.repository.ProductRepo;
 import com.pricetracker.repository.ProductSnapshotsRepo;
 import com.pricetracker.service.ScrapersService.AmazonScraperService;
 import com.pricetracker.service.ScrapersService.FlipshopeScraperService;
-import com.pricetracker.util.ScraperHelper;
+import com.pricetracker.util.HelperFunction;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+// ... keep imports and class definitions the same ...
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class PriceTrackingService {
-
 
     private final ProductRepo productRepo;
     private final ProductSnapshotsRepo snapshotsRepo;
@@ -41,42 +43,36 @@ public class PriceTrackingService {
     private final PriceHistoryService priceHistoryService;
     private final StoreSalesService storeSalesService;
 
+    // 1. Inject the CacheManager to manually kick out specific keys
+    private final org.springframework.cache.CacheManager cacheManager;
+
     public ResponseEntity<SuccessScrapDTO> trackByAmazonUrl(String url) {
 
-        //Getting ASIN
-        String asin = ScraperHelper.extractAsin(url);
-
+        String asin = HelperFunction.extractAsin(url);
         Optional<Product> productOpt = productRepo.findByPid(asin);
 
         if (productOpt.isPresent()) {
             Product product = productOpt.get();
 
-            // 1. Scrape latest data from Amazon
             Optional<AmazonScraperDTO> scraperDTO = amazonScraperService.scrapeAmazonProduct(url);
             if (scraperDTO.isEmpty()) {
-                ResponseEntity.notFound();
+                return ResponseEntity.notFound().build(); // Added missing .build() to fix compile error
             }
 
             AmazonScraperDTO dto = scraperDTO.get();
-
-            //Getting Snapshot of Product
             Optional<ProductSnapshots> snapshotOpt = snapshotsRepo.findByProduct(product);
 
-            // UPDATE snapshot
             if (snapshotOpt.isPresent()) {
                 ProductSnapshots snapshot = snapshotOpt.get();
-
                 snapshot.setPrice(dto.getPrice());
                 snapshot.setMRP(dto.getMRP());
                 snapshot.setRating(dto.getRating());
                 snapshot.setAvailability(dto.getAvailability());
                 snapshot.setDiscount(dto.getDiscount());
-
                 snapshotsRepo.save(snapshot);
             }
 
             boolean exists = priceHistoryRepo.existsByProductAndDate(product, LocalDate.now());
-                // Create History
             if (!exists) {
                 PriceHistory history = new PriceHistory();
                 history.setProduct(product);
@@ -85,60 +81,59 @@ public class PriceTrackingService {
                 history.setStore(snapshotOpt.get().getStore());
                 priceHistoryRepo.save(history);
             }
-            return ResponseEntity.ok(new SuccessScrapDTO(
-                    true,
-                    "Successful",
-                    product.getPid()
-            ));
+            evictCache("productDetails", product.getPid());
+
+            return ResponseEntity.ok(new SuccessScrapDTO(true, "Successful", product.getPid()));
         }
 
+        // --- New Product (Flipshope flow) ---
         RootDTO rootDTO = flipshopeScraperService.scrapeFlipshopProduct(url);
         PagePropsDTO pagePropsDTO = rootDTO.getPageProps();
 
         List<StoreDTO> stores = pagePropsDTO.getStoreforProducts();
         List<StoreSaleDTO> storeSaleList = pagePropsDTO.getStoreSalesData();
 
-        if (stores == null || stores.isEmpty())
-            throw new RuntimeException("No store data");
+        StoreDTO storeDTO;
 
-        if (storeSaleList == null || storeSaleList.isEmpty())
-            throw new RuntimeException("No store sales data");
+        // 1. Store Assignment Logic
+        if (stores != null && !stores.isEmpty()) {
+            storeDTO = stores.getFirst(); // Real store present
+        } else {
+            storeDTO = StoreDTO.defaultStore(); // Use memory-only default store
+        }
 
-        StoreDTO storeDTO = stores.getFirst();
-
-// 🔥 MERGE ID FROM SALES DATA
-        storeDTO.setStore_id(storeSaleList.getFirst().getStoreId());
-
+        // This will save to the DB if it's a real store,
+        // or return a transient object if it's the default store.
         Store store = storeService.getOrCreateStore(storeDTO);
 
+        // 2. Product Mappings
         ProductDTO productDTO = pagePropsDTO.getProduct();
-
-        //here we are setting the filed which is not in flipshope json so we are extract from Amazon pages while url fetching...
         productDTO.setRating(Float.valueOf(rootDTO.getRating()));
         productDTO.setAvailability(rootDTO.getAvailability());
         productDTO.setDiscount(Integer.valueOf(rootDTO.getDiscount()));
 
-
         List<GraphDataDTO> graphDataList = pagePropsDTO.getGraph_Products_details();
 
-
         Product product = productService.getOrCreateProduct(productDTO);
-
         snapshotService.saveSnapshot(productDTO);
+
+        // Passing the store here works perfectly, whether it's database-persisted or transient
         priceHistoryService.saveHistory(product, store, graphDataList);
-        storeSalesService.saveSales(storeSaleList);
 
+        // 3. Store Sales Conditional Logic: Skip entirely if not present
+        if (storeSaleList != null && !storeSaleList.isEmpty()) {
+            storeSalesService.saveSales(storeSaleList);
+        }
 
-        return ResponseEntity.ok(
-                new SuccessScrapDTO(
-                        true,
-                        "Successful",
-                        productDTO.getPid()
-
-                )
-        );
+        evictCache("products", "all_products");
+        return ResponseEntity.ok(new SuccessScrapDTO(true, "Successful", productDTO.getPid()));
     }
 
+    // Quick helper method to make eviction clean and prevent NullPointerExceptions
+    private void evictCache(String cacheName, Object key) {
+        var cache = cacheManager.getCache(cacheName);
+        if (cache != null) {
+            cache.evict(key);
+        }
+    }
 }
-
-

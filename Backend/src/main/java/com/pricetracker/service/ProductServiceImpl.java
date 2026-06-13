@@ -10,6 +10,7 @@ import com.pricetracker.entity.ProductSnapshots;
 import com.pricetracker.repository.PriceHistoryRepo;
 import com.pricetracker.repository.ProductRepo;
 import com.pricetracker.repository.ProductSnapshotsRepo;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -61,43 +62,9 @@ public class ProductServiceImpl implements ProductService{
         return repo.findAll();
     }
 
-    // @Override
-    // public ProductDetailsDTO getProductWithDetail(Long id) {
-
-    //     Product p = repo.findById(id)
-    //             .orElseThrow(() -> new RuntimeException("Product not found"));
-
-    //     ProductSnapshots s = snapshotRepo.findByProduct(p)
-    //             .orElseThrow(() -> new RuntimeException("Snapshot not found"));
-
-    //     ProductDetailsDTO dto = new ProductDetailsDTO();
-    //     dto.setPid(p.getPid());
-    //     dto.setTitle(p.getTitle());
-    //     dto.setMrp(s.getMRP());
-    //     dto.setPrice(s.getPrice());
-    //     dto.setDiscount(s.getDiscount());
-    //     dto.setAvailability(s.getAvailability());
-    //     dto.setRating(s.getRating());
-    //     dto.setImgurl(p.getImg_url());
-    //     dto.setStore_imgurl(s.getStore().getLogoUrl());
-
-    //     List<PriceHistory> historyList = historyRepo.findAllByProduct_IdOrderByDateAsc(p.getId());
-
-    //     List<GraphDataDTO> graphData = historyList.stream()
-    //             .map(h -> {
-    //                 GraphDataDTO g = new GraphDataDTO();
-    //                 g.setTime(h.getDate());
-    //                 g.setMin_price(h.getPrice());
-    //                 return g;
-    //             })
-    //             .toList();
-
-    //     dto.setGraph_data(graphData);
-
-    //     return dto;
-    // }
     
     @Override
+    @Cacheable(value = "productDetails", key = "#pid")
     public ProductDetailsDTO getProductWithDetail(String pid) {
 
         Product p = repo.findByPid(pid)
@@ -135,6 +102,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    @Cacheable(value = "products", key = "'all_products'")
     public List<ProductListDTO> getAllProductWithInfo(){
 
         List<Product> products = repo.findAll();
@@ -164,6 +132,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    @Cacheable(value = "productsByCategory", key = "#category")
     public List<ProductListDTO> getAllProductByCategory(String category){
 
         List<Product> products = repo.findAllByCategoryContainingIgnoreCase(category);

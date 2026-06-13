@@ -49,6 +49,7 @@
   padding: 10px 15px;
   border-radius: 10px;
   margin-bottom: 15px;
+  width: stretch;
 }
 
 .input-icon {
@@ -68,12 +69,53 @@
 .forgot {
   text-align: right;
   margin-bottom: 20px;
+  border: none;
 }
 
-.forgot a {
-  font-size: 12px;
-  text-decoration: none;
-  color: #333;
+.forgot-btn {
+  background: none;
+  border: none;
+  color: #2563eb;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0;
+}
+
+.forgot-btn:hover {
+  text-decoration: underline;
+}
+
+
+/* Container for alignment of OTP Input and button */
+.otp-inline-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+/* Let the OTP input expand across left-over room */
+.otp-inline-row .otp-input-box {
+  flex: 1;
+  margin-bottom: 0 !important; /* overrides standard input spacing to stay parallel */
+}
+
+/* Styling for the Get OTP dynamic button */
+.get-otp-btn {
+  padding: 0 15px;
+  height: 35px;
+  background: linear-gradient(to right, #86ebb9, #9ccedb);
+  color: grey;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+}
+
+.get-otp-btn:hover {
+  background-color: #1d4ed8;
 }
 
 /* Button */
@@ -104,7 +146,26 @@
   margin-bottom: 15px;
 }
 
+.otp-btn{
+display: flex;
+align-items: center;
+border: none;
+color: #666;
+white-space: nowrap;
+border-radius: 5px;
+font-size: 14px;
+background: linear-gradient(to right, #86ebb9, #9ccedb);
+padding: 10px 15px;
+margin-bottom: 15px;
+margin-right: 10px
+}
 
+.verify-input{
+display: flex;
+justify-content: space-between;
+align-items: center;
+border: none;
+}
 
 .social-login {
   padding: 8px;

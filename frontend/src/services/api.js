@@ -2,65 +2,23 @@
 const API_BASE_URL =
   process.env.REACT_APP_API_URL || "http://localhost:8080/";
 
-/**
- * Centralized HTTP request handler
- *
- * Responsibilities:
- * - Creates full API URL
- * - Adds default headers
- * - Adds JWT token automatically
- * - Parses JSON/text responses
- * - Converts backend errors into readable frontend errors
- * - Handles network/server failures
- */
-const request = async (endpoint, options = {}) => {
-
-  // Remove trailing slash from base url
-  // Example:
-  // http://localhost:8080/ -> http://localhost:8080
+const request = async (endpoint, options = {}, tokenFromState = null) => {
   const base = API_BASE_URL.replace(/\/$/, "");
-
-  // Ensure endpoint starts with "/"
-  // Example:
-  // api/products -> /api/products
   const path = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
-
-  // Final URL
   const url = `${base}${path}`;
 
-  // JWT token stored after login
-  const token = localStorage.getItem("token");
-
-  /**
-   * Default headers sent with every request
-   *
-   * Accept:
-   * tells backend frontend expects JSON
-   *
-   * Authorization:
-   * sends JWT token for protected routes
-   */
   const defaultHeaders = {
     Accept: "application/json",
-
-    // Example:
-    // Authorization: Bearer eyJhbGc...
-    Authorization: token ? `Bearer ${token}` : "",
+    Authorization: tokenFromState ? `Bearer ${tokenFromState}` : "",
   };
 
-  /**
-   * If request has body
-   * tell backend body contains JSON
-   */
   if (options.body) {
     defaultHeaders["Content-Type"] = "application/json";
   }
 
-  /**
-   * Final fetch configuration
-   */
   const config = {
     ...options,
+    credentials: "include",
     headers: {
       ...defaultHeaders,
       ...options.headers,
@@ -68,150 +26,54 @@ const request = async (endpoint, options = {}) => {
   };
 
   try {
-
-    /**
-     * Send HTTP request
-     */
     const response = await fetch(url, config);
-//
-//    console.log("========== API REQUEST ==========");
-//    console.log("URL:", url);
-//    console.log("METHOD:", config.method || "GET");
-//    console.log("HEADERS:", config.headers);
-//    console.log("BODY:", options.body);
-//    console.log("STATUS:", response.status);
-//    console.log("================================");
 
-    /**
-     * 204 = success but no content
-     */
     if (response.status === 204) {
       return null;
     }
 
-    /**
-     * Check response type
-     *
-     * Example:
-     * application/json
-     * text/plain
-     */
-    const contentType = response.headers.get("content-type") || "";
-
-    const isJson = contentType.includes("application/json");
-
-    /**
-     * Parse response body
-     */
-    let data;
-
-    try {
-      data = isJson
-        ? await response.json()
-        : await response.text();
-
-    } catch {
-
-      /**
-       * Happens when:
-       * - backend sends empty response
-       * - invalid JSON
-       */
-      data = null;
+    // 🔑 FIXED: Parse the JSON immediately so we can read backend messages
+    let data = null;
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      data = await response.json();
+    } else {
+      data = await response.text(); // Fallback for plain text responses
     }
 
+    // Now 'data' holds your backend's ResponseEntity body!
 
-    /**
-     * Handle backend errors
-     *
-     * Common status codes:
-     *
-     * 400 -> Bad request
-     * 401 -> Unauthorized (not logged in)
-     * 403 -> Forbidden / invalid JWT
-     * 404 -> API not found
-     * 409 -> Duplicate data
-     * 500 -> Backend crashed
-     */
     if (!response.ok) {
+      let message = data?.error || data?.message || `API Error: ${response.statusText}`;
 
-      let message =
-        data?.message ||
-        data ||
-        `API Error: ${response.statusText}`;
-
-      /**
-       * Better readable errors
-       */
       switch (response.status) {
-
-        case 400:
-          message = message || "Invalid request data";
-          break;
-
-        case 401:
-          message = "Please login first";
-          break;
-
-        case 403:
-          message =
-            "Please Login First.";
-          break;
-
-        case 404:
-          message = "API endpoint not found";
-          break;
-
-        case 409:
-          message = message || "Data already exists";
-          break;
-
-        case 500:
-          message = "Something Went Wrong";
-          break;
-
-        default:
-          break;
+        case 400: message = message || "Invalid request data"; break;
+        case 401: message = message || "Please login first"; break;
+        case 403: message ="Access denied. Please login first."; break;
+        case 404: message = message || "API endpoint not found"; break;
+        case 409: message = message || "Data already exists"; break; // Will use backend's msg
+        case 500: message = message || "Something Went Wrong on the server"; break;
+        default: break;
       }
 
-      console.error("API ERROR:", message);
-
       const apiError = new Error(message);
-
       apiError.status = response.status;
+      apiError.originalError = data; // Keeps the raw backend error structure safe
 
-      apiError.originalError = data;
-
-      throw apiError;
+      throw apiError; // Throws to the catch block in signin.jsx
     }
 
     return data;
 
   } catch (error) {
-
-    console.error("FETCH ERROR:", error);
-
-    /**
-     * TypeError usually means:
-     *
-     * - backend server stopped
-     * - CORS issue
-     * - internet disconnected
-     * - wrong API url
-     */
     if (error instanceof TypeError) {
-
       const netError = new Error(
         "Unable to connect to server. Please check backend server, internet connection, or CORS configuration."
       );
-
       netError.status = 0;
-
       netError.originalError = error;
-
       throw netError;
     }
-
     throw error;
   }
 };
@@ -262,7 +124,7 @@ const realApi = {
         const products = await realApi.getAllProducts();
         return products.filter((product) => (product.price?.discount || 0) > 0);
       }
-      console.warn("Failed to fetch deals", error);
+//      console.warn("Failed to fetch deals", error);
       return [];
     }
   },
@@ -287,7 +149,7 @@ const realApi = {
         currency: item.currency,
       }));
     } catch (error) {
-      console.warn("Failed to fetch history", error);
+//      console.warn("Failed to fetch history", error);
       return [];
     }
   },
@@ -306,7 +168,7 @@ const realApi = {
         timeline: Array.isArray(data.timeline) ? data.timeline : [],
       };
     } catch (error) {
-      console.warn("Failed to fetch trends", error);
+//      console.warn("Failed to fetch trends", error);
       return {
         summary: null,
         categories: [],
@@ -327,6 +189,15 @@ const realApi = {
     return data;
   },
 
+  updateUser: async (payload) => {
+      const data = await request(`/api/user/update`, {
+        method: "PATCH",
+        body: JSON.stringify(payload),
+      });
+
+      return data;
+    },
+
 
 //    Contract: Post /api/user/login ->Login User
   loginUser: async (payload) => {
@@ -338,41 +209,77 @@ const realApi = {
     return data;
   },
 
+  refreshToken: async () => {
+    try {
+      // request() already checks for response.ok and parses the JSON for you!
+      const data = await request(`/api/user/refresh`, {
+        method: "POST",
+        headers: {
+          "Accept": "application/json"
+        },
+        credentials: "include"
+      });
+
+      return data; // This will be { AccessToken: "..." } or null
+    } catch (error) {
+      return null;
+    }
+  },
+
+  sendOTP: async(payload) =>{
+
+    const data = await request("api/sendEmail/verify", {
+        method: "POST",
+        body: JSON.stringify(payload),
+    });
+    return data;
+
+  },
+
+  sendForgotOTP: async(payload) =>{
+
+      const data = await request("api/sendEmail/forgot", {
+          method: "POST",
+          body: JSON.stringify(payload),
+      });
+      return data;
+
+    },
 
 //   Contract: GET /api/alerts -> Fetches alerts.
-  getAlerts: async () => {
+  getAlerts: async (token) => {
     try {
-      const data = await request("/api/alerts");
+      const data = await request("/api/alerts", {}, token);
       return Array.isArray(data) ? data : [];
     } catch (error) {
-      console.warn("Failed to fetch alerts", error);
+//      console.warn("Failed to fetch alerts", error);
       return [];
     }
   },
 
 //   Contract: POST /api/alerts -> Creates a new alert.
-  createAlert: async (payload) => {
+  createAlert: async (payload,token) => {
     const data = await request("/api/alerts", {
       method: "POST",
       body: JSON.stringify(payload),
-    });
+    },token);
     return data;
   },
 
 //    Contract: PATCH /api/alerts/:id ->Updates an alert.
-  updateAlert: async (id, updates) => {
+  updateAlert: async (id, updates, token) => {
     const data = await request(`/api/alerts/${id}`, {
       method: "PATCH",
       body: JSON.stringify(updates),
-    });
+    },token);
     return data;
   },
 
 //    Contract: DELETE /api/alerts/:id ->Deletes an alert.
-  deleteAlert: async (id) => {
+  deleteAlert: async (id,token) => {
     await request(`/api/alerts/${id}`, {
       method: "DELETE",
-    });
+    },token);
     return { id };
   },
 

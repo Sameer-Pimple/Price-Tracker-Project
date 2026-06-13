@@ -8,14 +8,18 @@ import { useAuth } from "../context/AuthContext";
 const AppLayout = ({ children }) => {
 
     const navigate = useNavigate();
-    const { isLoggedIn } = useAuth();
+    const { accessToken, logout} = useAuth();
     const handleLogout = () => {
 
-          localStorage.removeItem("token");
-          localStorage.removeItem("user");
+                    logout();
+                  navigate("/", {
+                     state: {
+                        message: "Logout Successful"
+                     }
+                  });
 
-          window.location.href = "/";
-       };
+
+    };
     return (
       <div className="app-shell">
         <header className="app-header">
@@ -40,7 +44,7 @@ const AppLayout = ({ children }) => {
 
             <div className="logintab">
               {
-                 isLoggedIn ? (
+                 accessToken ? (
 
                     <Button size="small" variant="text" onClick={handleLogout}>
                        Logout

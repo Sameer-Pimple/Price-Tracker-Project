@@ -6,6 +6,7 @@ import com.pricetracker.entity.StoreSales;
 import com.pricetracker.mapper.StoreSalesMapper;
 import com.pricetracker.repository.StoreRepo;
 import com.pricetracker.repository.StoreSalesRepo;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -52,7 +53,8 @@ public class StoreSalesServiceImpl implements StoreSalesService {
 
         }
     }
-
+    @Override
+    @Cacheable(value = "storeSalesHistory", key = "#storeId + '_' + #date")
     public Optional<StoreSales> getSalesByStoreAndDate(Long storeId, LocalDateTime date){
         Optional<Store> store = storeRepo.findById(storeId);
         return storeSalesRepo.findByStoreAndStartDate(store, date);

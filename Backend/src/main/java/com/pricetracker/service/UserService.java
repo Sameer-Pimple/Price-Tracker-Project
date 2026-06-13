@@ -2,19 +2,21 @@ package com.pricetracker.service;
 
 import com.pricetracker.DTO.UserCreateRequest;
 import com.pricetracker.entity.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Optional;
 
 
 public interface UserService {
 
-    void createUser(UserCreateRequest userCreateRequest);
+    boolean createUser(UserCreateRequest userCreateRequest);
 
     void saveUser(User user);
 
     Optional<User> getUserById(Long id);
 
     Optional<User> getUserByEmail(String Email);
+
+    boolean isEmailExist(String email);
+
+    boolean updateUser(UserCreateRequest userReq);
 }

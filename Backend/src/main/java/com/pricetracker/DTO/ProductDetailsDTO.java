@@ -5,12 +5,13 @@ import com.pricetracker.DTO.Flipshope.GraphDataDTO;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ProductDetailsDTO {
+public class ProductDetailsDTO implements Serializable {
     private String pid;
     private Long id;
     private Integer price;

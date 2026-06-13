@@ -67,8 +67,8 @@ const Home = () => {
     const url = e.target.elements["url-input"].value;
     e.preventDefault();
     // Basic validation matching UrlForm
-    if (!url.includes("amazon.in")) return;
-    if (!url.includes("/dp/") && !url.includes("/gp/")) return;
+    if (!url.includes("amazon.in" ) && !url.includes("amzn.in")) return;
+    if (!url.includes("/dp/") && !url.includes("/gp/") && !url.includes("/d/")) return;
 
     setTrackState("tracking");
 

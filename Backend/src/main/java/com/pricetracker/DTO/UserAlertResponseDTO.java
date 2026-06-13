@@ -17,5 +17,6 @@ public class UserAlertResponseDTO {
     // Product info
     private String productTitle;
     private String productImage;
+    private String Pid;
 
 }

@@ -1,6 +1,5 @@
 package com.pricetracker.controller;
 
-import com.pricetracker.DTO.Amazon.AmazonScraperDTO;
 import com.pricetracker.DTO.Flipshope.TrackRequestDTO;
 import com.pricetracker.DTO.SuccessScrapDTO;
 import com.pricetracker.service.PriceTrackingService;

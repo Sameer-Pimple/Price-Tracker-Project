@@ -21,6 +21,8 @@ public class UserAlertResponseMapper {
 
         dto.setProductImage(alert.getProduct().getImg_url());
 
+        dto.setPid(alert.getProduct().getPid());
+
         return dto;
     }
 }

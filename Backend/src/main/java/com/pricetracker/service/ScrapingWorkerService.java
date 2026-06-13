@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional; // ◄ Make sure it's this one
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -15,7 +15,7 @@ public class ScrapingWorkerService {
     private final PriceTrackingService priceTrackingService;
 
     @Async("scrapingExecutor")
-    @Transactional(propagation = Propagation.REQUIRES_NEW) // Isolates transaction bounds
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void processProductAsync(String Pid) {
 
         if (Pid == null ) return;

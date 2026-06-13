@@ -2,7 +2,6 @@ package com.pricetracker.service;
 
 
 import com.pricetracker.DTO.UserAlertDTO;
-import com.pricetracker.entity.User;
 import com.pricetracker.entity.UserAlert;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -17,7 +16,7 @@ public interface UserAlertService {
     List<UserAlert> getAlertsByUser(UserDetails user);
 
 
-    void deleteAlert(Long AlertId);
+    String deleteAlert(Long AlertId);
 
 
     UserAlert updateAlert(Long id, Map<String, Object> updates);

@@ -10,7 +10,7 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 @Service
-public class ScraperHelper {
+public class HelperFunction {
     private static final Pattern ASIN_PATTERN =
             Pattern.compile("/([A-Z0-9]{10})(?:[/?]|$)");
 
@@ -81,5 +81,9 @@ public class ScraperHelper {
             return matcher.group(1);
         }
         return null;
+    }
+
+    public static String GenerateOTP(){
+        return String.format("%06d", new Random().nextInt(1000000));
     }
 }

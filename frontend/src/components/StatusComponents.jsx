@@ -66,7 +66,6 @@ export const EmptyState = ({ message, children }) => (
     <div style={{
         padding: '3rem 1rem',
         textAlign: 'center',
-        backgroundColor: '#f9fafb',
         borderRadius: '8px',
         border: '1px dashed #d1d5db',
         color: '#6b7280'

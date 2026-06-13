@@ -13,25 +13,50 @@ public class UserServiceImpl implements UserService{
 
     private final UserRepo userRepo;
     private final PasswordEncoder passwordEncoder;
+    private final AuthService authService;
 
-    public UserServiceImpl(UserRepo userRepo, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepo userRepo, PasswordEncoder passwordEncoder,AuthService authService) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
+        this.authService = authService;
     }
 
     @Override
-    public void createUser(UserCreateRequest userReq) {
-        if (userRepo.existsByEmail(userReq.getEmail())){
-            throw new RuntimeException(
-                    "Email already registered");
+    public boolean createUser(UserCreateRequest userReq) {
+        try{
+            if(authService.verifyOtp(userReq.getEmail(),userReq.getOtp())){
+                User user = new User();
+                user.setUsername(userReq.getName());
+                user.setEmail(userReq.getEmail());
+                user.setMobileNumber(userReq.getMobilenum());
+                user.setPassword(passwordEncoder.encode(userReq.getPassword()));
+                userRepo.save(user);
+                return true;
+            }
+
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
-        User user = new User();
-        user.setUsername(userReq.getName());
-        user.setEmail(userReq.getEmail());
-        user.setMobileNumber(userReq.getMobilenum());
-        user.setPassword(passwordEncoder.encode(userReq.getPassword()));
-        userRepo.save(user);
+        return false;
+    }
+
+    @Override
+    public boolean updateUser(UserCreateRequest userReq) {
+        try{
+            if(authService.verifyOtp(userReq.getEmail(),userReq.getOtp())){
+                User user = userRepo.findByEmail(userReq.getEmail()).orElseThrow(() -> new RuntimeException("User Not Found"));
+                user.setPassword(passwordEncoder.encode(userReq.getPassword()));
+                userRepo.save(user);
+                return true;
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return false;
     }
 
     @Override
@@ -48,4 +73,11 @@ public class UserServiceImpl implements UserService{
     public Optional<User> getUserByEmail(String Email) {
         return userRepo.findByEmail(Email);
     }
+
+    @Override
+    public boolean isEmailExist(String email){
+        return userRepo.existsByEmail(email);
+    }
+
+
 }

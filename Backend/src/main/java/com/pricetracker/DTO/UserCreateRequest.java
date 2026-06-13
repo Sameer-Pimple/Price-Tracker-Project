@@ -8,6 +8,7 @@ import lombok.Setter;
 public class UserCreateRequest {
     private String name;
     private String email;
+    private String otp;
     private Long mobilenum;
     private String password;
 }

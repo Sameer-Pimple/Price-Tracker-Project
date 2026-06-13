@@ -2,7 +2,7 @@ package com.pricetracker.service.ScrapersService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pricetracker.DTO.Flipshope.RootDTO;
-import com.pricetracker.util.ScraperHelper;
+import com.pricetracker.util.HelperFunction;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -100,8 +100,8 @@ public class FlipshopeScraperService {
 
 
 
-            if (ScraperHelper.shouldScroll()) {
-                ScraperHelper.randomScroll(driver);
+            if (HelperFunction.shouldScroll()) {
+                HelperFunction.randomScroll(driver);
             }
 
             // JavaScript Executer to gets values Using JS
@@ -151,7 +151,7 @@ public class FlipshopeScraperService {
                     .replaceAll("\\s+", "-");
 
             // ===== Extract ASIN =====
-            String asin = ScraperHelper.extractAsin(userUrl);
+            String asin = HelperFunction.extractAsin(userUrl);
             if (asin == null) {
                 throw new RuntimeException("ASIN not found in Amazon URL");
             }
@@ -166,13 +166,13 @@ public class FlipshopeScraperService {
             driver.get(flipshopePageUrl);
             Thread.sleep(2000); // small wait for page load
 
-            if (ScraperHelper.isBlocked(driver)) {
+            if (HelperFunction.isBlocked(driver)) {
                 throw new RuntimeException("FLIPSHOPE BLOCKED / CAPTCHA");
             }
 
 
 // Extract fresh buildId dynamically
-            String buildId = ScraperHelper.extractBuildId(driver);
+            String buildId = HelperFunction.extractBuildId(driver);
 
 // Now build JSON URL dynamically
             String flipshopeJsonUrl =

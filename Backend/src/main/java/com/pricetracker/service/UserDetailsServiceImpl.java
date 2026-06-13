@@ -1,6 +1,5 @@
 package com.pricetracker.service;
 
-import com.pricetracker.DTO.UserCreateRequest;
 import com.pricetracker.entity.User;
 import com.pricetracker.repository.UserRepo;
 import org.springframework.security.core.userdetails.UserDetails;

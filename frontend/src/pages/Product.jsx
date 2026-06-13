@@ -3,6 +3,7 @@ import { useParams} from "react-router-dom";
 import api from "../services/api";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import { useAuth } from "../context/AuthContext";
 import {
   LoadingState,
   EmptyState,
@@ -14,7 +15,7 @@ import "./Product.css";
 const Product = () => {
 
   const [form, setForm] = useState({targetPrice: ''});
-
+const {accessToken} = useAuth() ;
 
   const [showAlert, setShowAlert] = useState(false);
   const [message, setMessage] = useState("");
@@ -34,7 +35,7 @@ const Product = () => {
         setProduct(data);
       }
     } catch (err) {
-        console.error("Product fetch error:", err);
+//         console.error("Product fetch error:", err);
         setAlertType("error");
         setMessage(
           err.message || "Failed to fetch product data"
@@ -58,7 +59,7 @@ const Product = () => {
         try {
               await api.createAlert({pid,
                 targetPrice: Number(form.targetPrice)
-            });
+            }, accessToken);
             setForm({ targetPrice: '' });
             setAlertType("success");
             setMessage("Alert created successfully");
