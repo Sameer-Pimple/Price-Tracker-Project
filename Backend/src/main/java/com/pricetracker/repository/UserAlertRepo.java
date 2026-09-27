@@ -18,4 +18,10 @@ public interface UserAlertRepo extends JpaRepository<UserAlert, Long> {
     List<UserAlert> findByProductIdAndType(Long productId, AlertType type);
 
     boolean existsByUserIdAndProductId(Long Uid, Long Pid1);
+
+    @Query("SELECT ua FROM UserAlert ua " +
+       "JOIN FETCH ua.user " +
+       "WHERE ua.product.id = :productId AND ua.type = :type")
+List<UserAlert> findByProductIdAndTypeWithUser(Long productId, AlertType type);
+
 }

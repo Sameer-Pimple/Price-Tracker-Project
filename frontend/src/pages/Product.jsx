@@ -102,16 +102,31 @@ const {accessToken} = useAuth() ;
 
   if (!product) return <EmptyState message="Product not found" />;
 
-  // Determine values to display (prefer live data if available)
-  const displayPrice = liveData?.Price || product.price;
-  const displayOriginalPrice = liveData?.MRP || product.mrp;
-  const stats = calculateTrends(product.graph_data);
-  const averagePrice = product.graph_data && product.graph_data.length > 0
-    ? product.graph_data.reduce((sum, item) => sum + Number(item.min_price || 0), 0) / product.graph_data.length
-    : 0; // Default to 0 if there is no history data yet
+const displayPrice = Number(liveData?.Price || product.price);
+const displayOriginalPrice = Number(liveData?.MRP || product.mrp);
 
-  // Intelligence Data
-  const { buySignal, predictedDrop } = product.intelligence || {};
+const stats = calculateTrends(product.graph_data);
+
+const averagePrice =
+  product.graph_data && product.graph_data.length > 0
+    ? product.graph_data.reduce(
+        (sum, item) => sum + Number(item.min_price || 0),
+        0
+      ) / product.graph_data.length
+    : 0;
+
+// Intelligence Data
+let buySignal = "No Data";
+
+if (averagePrice > 0) {
+  if (displayPrice < averagePrice) {
+    buySignal = "Strong Buy";
+  } else if (displayPrice === averagePrice) {
+    buySignal = "Buy";
+  } else {
+    buySignal = "Wait";
+  }
+}
   
   return (
     <div className="product-container">
@@ -138,9 +153,9 @@ const {accessToken} = useAuth() ;
             <div style={{ marginBottom: "0.5rem" }}>
               <span
                 className={`badge ${
-                  buySignal === "STRONG_BUY" || buySignal === "BUY"
+                  buySignal === "Strong Buy" || buySignal === "Buy"
                     ? "badge-success"
-                    : buySignal === "WAIT"
+                    : buySignal === "Wait"
                     ? "badge-warning"
                     : "badge-danger"
                 }`}
@@ -190,13 +205,9 @@ const {accessToken} = useAuth() ;
               <span className="intel-label">Trend</span>
               <span
                 className="intel-value"
-                style={{
-                  color: predictedDrop
-                    ? "var(--success-color)"
-                    : "var(--text-muted)",
-                }}
+
               >
-                {predictedDrop ? "Dropping" : "Stable"}
+                {stats.direction}
               </span>
             </div>
           </div>

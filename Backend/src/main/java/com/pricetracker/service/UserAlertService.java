@@ -2,6 +2,7 @@ package com.pricetracker.service;
 
 
 import com.pricetracker.DTO.UserAlertDTO;
+import com.pricetracker.entity.Product;
 import com.pricetracker.entity.UserAlert;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -11,7 +12,7 @@ import java.util.Map;
 public interface UserAlertService {
     void createAlert(UserAlertDTO dto, UserDetails user);
 
-   void checkAndTriggerAlerts(Long productId,Double currentPrice);
+   void checkAndTriggerAlerts(Product product, Double currentPrice);
 
     List<UserAlert> getAlertsByUser(UserDetails user);
 

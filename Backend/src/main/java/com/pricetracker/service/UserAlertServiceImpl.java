@@ -25,11 +25,12 @@ public class UserAlertServiceImpl implements UserAlertService {
     private final UserRepo userRepo;
     private final ProductRepo productRepo;
     private final UserAlertRepo alertRepo;
-
-    public UserAlertServiceImpl(UserRepo userRepo, ProductRepo productRepo, UserAlertRepo alertRepo) {
+    private final EmailService emailService;
+    public UserAlertServiceImpl(UserRepo userRepo, ProductRepo productRepo, UserAlertRepo alertRepo, EmailService emailService) {
         this.userRepo = userRepo;
         this.productRepo = productRepo;
         this.alertRepo = alertRepo;
+        this.emailService = emailService;
     }
 
     @Override
@@ -57,16 +58,19 @@ public class UserAlertServiceImpl implements UserAlertService {
     }
 
     @Override
-    // 2. Evict when the background checker triggers alerts.
-    // Since multiple users could have an alert triggered for this productId,
-    // it's safest to clear all entries in the "userAlerts" cache space entirely.
     @CacheEvict(value = "userAlerts", allEntries = true)
-    public void checkAndTriggerAlerts(Long productId, Double currentPrice) {
-        List<UserAlert> activeAlerts = alertRepo.findByProductIdAndType(productId, AlertType.ACTIVE);
-
+    public void checkAndTriggerAlerts(Product product, Double currentPrice) {
+        // 1. Fetch active alerts for this product
+        List<UserAlert> activeAlerts = alertRepo.findByProductIdAndTypeWithUser(product.getId(), AlertType.ACTIVE);
+        String productUrl = "https://www.amazon.in/dp/" + product.getPid();
         for (UserAlert alert : activeAlerts) {
-            boolean shouldTrigger = currentPrice <= alert.getTargetPrice();
-            if (shouldTrigger) {
+            // 2. Condition check: Kya price target price se kam ya barabar hui hai?
+            if (currentPrice != null && currentPrice <= alert.getTargetPrice()) {
+                
+                // 3. User ko email send karo
+                String userEmail = alert.getUser().getEmail();
+                emailService.sendPriceAlert(userEmail, productUrl, currentPrice);
+                // 4. Status TRIGGERED karo taaki har scraping cycle mein dobara email na jaye (Anti-spam)
                 alert.setType(AlertType.TRIGGERED);
                 alert.setUpdatedAt(LocalDateTime.now());
                 alertRepo.save(alert);

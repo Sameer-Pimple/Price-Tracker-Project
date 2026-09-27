@@ -41,14 +41,17 @@ export const calculateTrends = (history) => {
     const sorted = [...history].sort((a, b) => new Date(a.time) - new Date(b.time));
 
     const prices = sorted.map(h => Number(h.min_price));
+    console.log(prices);
     const current = prices[prices.length - 1];
-    const previous = prices[prices.length - 2];
+    console.log(current);
+    const previous = prices[prices.length - 15];
+    console.log(previous);
     const min = Math.min(...prices);
     const max = Math.max(...prices);
 
     let direction = 'stable';
-    if (current < previous) direction = 'down';
-    else if (current > previous) direction = 'up';
+    if (current < previous) direction = 'Down';
+    else if (current > previous) direction = 'Up';
 
     return {
         direction, // 'up', 'down', 'stable'

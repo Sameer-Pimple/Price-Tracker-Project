@@ -181,7 +181,7 @@ const realApi = {
 
 //    Contract: Post /api/user/SignUp -> Register User
   registerUser: async (payload) => {
-    const data = await request(`/api/user/signin`, {
+    const data = await request(`/api/user/signup`, {
       method: "POST",
       body: JSON.stringify(payload),
     });
